@@ -1,0 +1,342 @@
+<template>
+  <div class="row">
+    <label :class="col_left" v-if="field.label !== null">
+      <span v-if="type != 'boolean' && type != 'checkbox'">
+        {{ field.label }}&nbsp;<i class="text-danger" v-if="attr('required')">*</i>
+      </span>
+    </label>
+
+    <div :class="col_right" v-if="!attr('hidden')">
+
+      <!-- component injections -->
+
+      <template v-if="attr('slot')">
+        <slot :name="attr('slot')" v-bind="_slotData"></slot>
+      </template>
+
+      <template v-else-if="attr('component')">
+        <keep-alive>
+          <component :is="attr('component')" v-bind="_componentProps" />
+        </keep-alive>
+      </template>
+
+      <!-- statics -->
+
+      <template v-else-if="type == '#link'">
+        <a :class="resize('form-control-plaintext')"
+          :href="attr('href')"
+          :target="attr('target')">
+          {{ value() }}
+        </a>
+      </template>
+      <template v-else-if="type[0] == '#' || type == 'static'">
+        <input
+          type="text"
+          :class="resize('form-control')"
+          :name="attr('name')"
+          :value="value()"
+          :disabled="true"
+          :placeholder="attr('placeholder')" />
+      </template>
+
+      <!-- composed form inputs -->
+
+      <template v-else-if="type == 'image'">
+        <div>
+          <upload-button
+            v-if="attr('upload')"
+            :$class="$resize(attr('upload.btn') || '', options)"
+            :name="attr('upload.name')"
+            :url="attr('upload.url')"
+            @done="attr('upload').done.call(data, arguments);$forceUpdate();"
+            @error="attr('upload').error.call(data, arguments)">
+            <img class="img-thumbnail mb-1" :style="attr('style')"
+              v-if="value() || attr('default')"
+              :src="value() || attr('default')">
+            <span class="btn btn-outline-secondary" v-else><i class="fa fa-plus"></i></span>
+          </upload-button>
+          <a class="btn btn-sm btn-outline-info corner-tl" href="javascript:;" @click="assign('')" v-if="value()">
+            <i class="fa fa-lg fa-trash-alt"></i>
+          </a>
+        </div>
+      </template>
+
+      <template v-else-if="type == 'json'">
+        <json-editor
+          :value="value()"
+          @input="assign($event)"></json-editor>
+      </template>
+
+      <template v-else-if="type == 'date'">
+        <date-time-picker
+          :$class="resize('form-control')"
+          :name="attr('name')"
+          :format="attr('format')"
+          :value="value()"
+          :disabled="attr('disabled')"
+          :enabled-dates="attr('enabledDates')"
+          :min-date="attr('minDate')"
+          :max-date="attr('maxDate')"
+          @input="assign($event)"></date-time-picker>
+      </template>
+
+      <!-- prmitive html form controls -->
+
+      <template v-else-if="type == 'radio' || type == 'switch'">
+        <label class="form-check-inline mt-2" v-for="option in selectOptions()">
+          <input
+            type="radio"
+            class="form-check-input"
+            :checked="option.value == value() || option == value()"
+            :name="attr('attr')"
+            :value="option.value || option"
+            @input="assign($event.target.value)"
+            :disabled="attr('disabled')"> {{ option.name || option }}
+        </label>
+      </template>
+
+      <template v-else-if="type == 'check-list'">
+        <div class="list-group list-group-sm">
+          <a class="list-group-item text-secondary d-flex justify-content-between"
+            :class="{'text-danger font-weight-bold': contain(option) }" v-for="option in selectOptions()"
+            @click="check(option)">
+            {{ option.name || option }}
+            <i class="fa fa-check text-danger mt-1" v-if="contain(option)"></i>
+          </a>
+        </div>
+      </template>
+
+      <template v-else-if="type == 'select'">
+        <select
+          :class="resize('form-control')"
+          :name="attr('name')"
+          :value="value()"
+          @input="assign($event.target.value, 'select')"
+          :disabled="attr('disabled')">
+          <option
+            v-for="option in selectOptions()"
+            :value="option.value || option">{{ option.name || option }}</option>
+          <option :value="null">(无)</option>
+        </select>
+      </template>
+
+      <template v-else-if="type == 'checkbox' || type == 'boolean'">
+        <label class="form-check-inline">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            :checked="value()"
+            @input="assign($event.target.checked)"
+            :disabled="attr('disabled')" /> {{ attr('label') }}
+        </label>
+      </template>
+
+      <template v-else-if="type == 'textarea' || attr('rows')">
+        <textarea
+          :class="resize('form-control')"
+          :name="attr('name')"
+          :value="value()"
+          @input="assign($event.target.value)"
+          :rows="attr('rows') || 3"
+          :disabled="attr('disabled')"
+          :placeholder="attr('placeholder')"></textarea>
+      </template>
+
+      <template v-else-if="type == 'password'">
+        <input
+          type="password"
+          :class="resize('form-control')"
+          :name="attr('name')"
+          :value="value()"
+          @input="assign($event.target.value)"
+          :disabled="attr('disabled')"
+          :placeholder="attr('placeholder')" />
+      </template>
+
+      <template v-else>
+        <input
+          type="text"
+          :class="resize('form-control')"
+          :name="attr('name')"
+          :value="value()"
+          @input="assign($event.target.value)"
+          :disabled="attr('disabled')"
+          :placeholder="attr('placeholder')" />
+      </template>
+
+      <small v-if="attr('hint')" class="text-muted">* {{ attr('hint') }}</small>
+    </div>
+  </div>
+</template>
+
+<script>
+  module.exports = {
+    template: '#DataFieldTemplate',
+    props: [
+      'field', 'data', 'options', 'caller'
+    ],
+    data: function() {
+      var options = this.options || {}
+      var layout = this.field.layout || options.field_layout
+      var cols = layout ? layout.split('|') : []
+      var col_left = (cols[0] || 'col-12') + ' col-form-label'
+      var col_right = cols[1] || 'col-12'
+      return {
+        col_left: col_left,
+        col_right: col_right,
+      };
+    },
+    computed: {
+      type: function() {
+        return this.attr('type') || ''
+      },
+      _slotData: function() {
+        return this.data
+      },
+      _componentProps: function() {
+        var props = this.attr('props') || {}
+        Object.assign(props, { data: this.data, })
+        return props
+      },
+    },
+    created: function() {
+      var self = this
+      if (this.type == 'switch') {
+        this.field.options = [
+          { name: '是', value: true },
+          { name: '否', value: false },
+        ]
+      }
+      this.assign(this.value() || this.attr('default'))
+    },
+    methods: {
+      value: function() {
+        var val = this.attr('value') || this.attr('bind') || this.attr('text')
+        if (val) return val
+
+        var attr = this.attr('attr')
+        if (!attr) return null
+
+        val = objectPath.get(this.data, attr)
+        if (!val) return null
+
+        var type = (this.attr('type') || '').toLowerCase()
+        var options = this.attr('options')
+        if (type == 'date' || type == '#date') {
+          var format = this.attr('format') || 'YYYY-MM-DD HH:mm'
+          return moment(val).format(format)
+        } else if (options && options.list && options.value) {
+          return objectPath.get(val, options.value)
+        } else {
+          return val
+        }
+      },
+      selectOptions: function() {
+        if (this.type == 'switch') {
+          return [
+            { name: '是', value: true },
+            { name: '否', value: false },
+          ]
+        }
+        var options = this.attr('options')
+        if (!options) {
+          return []
+        }
+        if (options.constructor == Array) {
+          return options
+        }
+        if (options.list) {
+          if (!options.name || !options.value) {
+            throw new Error('missing name or value of field options')
+          }
+          return options.list.map(function(iter) {
+            return {
+              name: objectPath.get(iter, options.name),
+              value: objectPath.get(iter, options.value),
+            }
+          })
+        } else {
+          return Object.keys(options).map(function(key) {
+            return {
+              name: options[key],
+              value: key
+            }
+          })
+        }
+      },
+      resize: function(classnames) {
+        return this.$resize(classnames, this.options)
+      },
+      attr: function(type) {
+        var val = null
+        if (type) {
+          val = objectPath.get(this.field, type)
+          if (typeof (val) == 'function') {
+            val = val.call(this.data, this.index)
+          }
+        }
+        return val
+      },
+      validate: function() {
+        var attr = this.attr('attr') || this.attr('value')
+        var val = objectPath.get(this.data, attr)
+        if (this.attr('required')) {
+          if (val === null) {
+            return '<i class="text-danger">*</i> <b>' + this.field.label + '</b> 不能为空'
+          } else if (!val) {
+            return null
+          } else if (this.attr('type') == 'check-list' && !val.length) {
+            return '<i class="text-danger">*</i> <b>' + this.field.label + '</b> 不能为空'
+          }
+        }
+        return null
+      },
+      assign: function(val, type) {
+        if (typeof (this.field.watch) == 'function') {
+          this.field.watch(val, this.value())
+        }
+        var options = this.attr('options')
+        if (options && options.list && options.name && options.value) {
+          for (var i = 0; i < options.list.length; i++) {
+            var item = options.list[i]
+            if (objectPath.get(item, options.value) == val) {
+              val = item
+              break
+            }
+          }
+        }
+        objectPath.set(this.data, this.attr('attr'), val);
+        if (typeof (this.field.onChange) == 'function') {
+          this.field.onChange.call(this.data, val)
+        }
+      },
+      contain: function(option) {
+        if (!option) return false
+        var list = objectPath.get(this.data, this.attr('attr')) || []
+        var val = this.$isNullOrUndefined(option.value) ? option : option.value
+        var index = list.indexOf(val)
+        return index >= 0
+      },
+      check: function(option) {
+        var list = objectPath.get(this.data, this.attr('attr')) || []
+        var val = this.$isNullOrUndefined(option.value) ? option : option.value
+        var index = list.indexOf(val)
+        if (index >= 0) {
+          list.splice(index, 1)
+        } else {
+          list.push(val)
+        }
+        objectPath.set(this.data, this.attr('attr'), list);
+        this.$forceUpdate()
+      }
+    },
+  }
+</script>
+
+<style scoped>
+  .corner-tl {
+    position: absolute;
+    top: 1em;
+    left: 2em;
+  }
+</style>

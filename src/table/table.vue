@@ -5,13 +5,13 @@
         <tr>
           <th v-for="col in view.columns" :style="col.style || ''">
             <template v-if="col.filter">
-              <col-filter
+              <el-filter
                 :label="col.label"
                 :column="col.filter.attr || col.attr"
                 :options="col.filter.options"
                 :empty="col.filter.empty || col.filter.default"
                 highlight="text-info"
-                $class="text-dark"></col-filter>
+                _class="text-dark"></el-filter>
             </template>
             <span v-else>{{ col.label }}</span>
           </th>
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+  const ResourceMixin = require('../script/ResourceMixin.js')
   module.exports = {
     template: '#DataTableTemplate',
     props: [

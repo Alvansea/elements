@@ -1,5 +1,5 @@
 <template>
-  <div :class="$class">
+  <div>
     <div class="row">
       <div class="col">
         <h5 class="mt-2">{{ label }}</h5>
@@ -85,7 +85,7 @@
   module.exports = {
     template: '#SetEditor',
     props: [
-      'data', 'view', '$class', 'label',
+      'data', 'view', 'label',
       'searchLabel', 'search', 'searchApi', 'sortable',
       'match'
     ],

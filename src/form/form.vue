@@ -1,5 +1,5 @@
 <template>
-  <form class="form" :class="$class" @submit.prevent="saveItem()">
+  <form class="form" @submit.prevent="saveItem()">
     <slot name="header"></slot>
     <div class="mb-3" v-if="view.button_position == 'header'">
       <button type="submit" :class="$resize('btn btn-success', view)">
@@ -19,18 +19,16 @@
           v-for="field in group.fields"
           v-if="!isHidden(field)">
           <div class="form-group">
-            <el-field ref="fields" :data="copy"
-              :field="field"
-              :options="view">
+            <el-field ref="fields" :data="copy" :field="field" :options="view">
               <!-- pass through scoped slots -->
               <template v-for="(_, scoped_slot_name) in $scopedSlots"
                 #[scoped_slot_name]="slotData">
-                <slot :name="scoped_slot_name" v-bind="slotData" />
+                <slot :name="scoped_slot_name" v-bind="slotData"></slot>
               </template>
 
               <!-- pass through normal slots -->
               <template v-for="(_, slot_name) in $slots" #[slot_name]>
-                <slot :name="slot_name" />
+                <slot :name="slot_name"></slot>
               </template>
             </el-field>
           </div>
@@ -56,10 +54,11 @@
 </template>
 
 <script>
+  const ResourceMixin = require('../script/ResourceMixin.js')
   module.exports = {
     template: '#DataFormTemplate',
     props: [
-      'data', 'view', 'save', 'api', '$class',
+      'data', 'view', 'save', 'api',
     ],
     mixins: [ResourceMixin],
     data: function() {
@@ -93,7 +92,7 @@
       attr: function(field, type) {
         var val = null
         if (type) {
-          val = objectPath.get(field, type)
+          val = this.$getAttr(field, type)
           if (typeof (val) == 'function') {
             val = val.call(this.data)
           }
@@ -147,9 +146,9 @@
         var fields = this.fields()
         for (var i in fields) {
           var field = fields[i]
-          var val = objectPath.get(copy, field.attr)
+          var val = this.$getAttr(copy, field.attr)
           if (typeof (val) == 'undefined') {
-            objectPath.set(copy, field.attr, '')
+            this.$setAttr(copy, field.attr, '')
           }
         }
 

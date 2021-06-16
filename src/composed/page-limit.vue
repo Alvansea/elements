@@ -1,6 +1,6 @@
 <template>
   <div class="d-inline-block">
-    <div class="btn-group" :class="$class">
+    <div class="btn-group" :class="_class">
       <a :class="className(option)"
         v-for="option in options"
         @click="$filterBy('limit', option)">{{ option }}</a>
@@ -11,7 +11,7 @@
 <script>
   module.exports = {
     props: [
-      'options', '$class', 'pagination'
+      'options', '_class', 'pagination'
     ],
     computed: {
       _limit: function() {

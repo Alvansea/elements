@@ -3,7 +3,7 @@
     <input type="text"
       ref="picker"
       class="form-control"
-      :class="$class"
+      :class="_class"
       :name="name"
       :value="date"
       :required="required"
@@ -18,10 +18,11 @@
 </template>
 
 <script>
+  $.fn.datetimepicker = require('bootstrap4-datetimepicker')
   module.exports = {
     template: '#DateTimePickerTemplate',
     props: [
-      'value', 'required', 'disabled', 'format', 'default', 'name', '$class', 'enabledDates', 'minDate', 'maxDate', 'config'
+      'value', 'required', 'disabled', 'format', 'default', 'name', '_class', 'enabledDates', 'minDate', 'maxDate', 'config'
     ],
     data: function() {
       return {

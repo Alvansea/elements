@@ -1,5 +1,5 @@
 <template>
-  <modal ref="modal" title="筛选" $class="fade filter-modal">
+  <el-modal ref="modal" title="筛选" class="fade filter-modal">
     <div class="filter-group" v-for="group in filters">
       <label>{{ group.name }}</label>
       <div class="btn-group btn-group-justified">
@@ -11,7 +11,7 @@
         </div>
       </div>
     </div>
-  </modal>
+  </el-modal>
 </template>
 
 <script>

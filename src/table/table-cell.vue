@@ -20,49 +20,47 @@
     </template>
 
     <template v-else-if="col.type == 'boolean'">
-      <i v-if="attr(data, col)" class="fa fa-check text-success"></i>
+      <i v-if="attr()" class="fa fa-check text-success"></i>
       <i v-else class="fa fa-times text-danger"></i>
     </template>
 
     <template v-else-if="col.type == 'toggle' || col.type == 'switch'">
-      <span ref="toggle" @click="toggle(data, col)">
+      <span ref="toggle" role="button" @click="toggle(data, col)">
         <i :class="toggleIcon"></i>
       </span>
     </template>
 
     <template v-else-if="col.type == 'edit'">
-      <a :class="btn(col)"
+      <a :class="btn()"
         @click="$emit('edit', data, index)">
-        <i :class="attr(data, col, 'icon')" v-if="col.icon"></i>
-        <img :src="attr(data, col, 'image')" v-if="col.image">
-        {{ attr(data, col) }}
+        <i :class="attr('icon')" v-if="col.icon"></i>
+        <img :src="attr('image')" v-if="col.image">
+        {{ attr() }}
       </a>
     </template>
 
     <template v-else-if="col.type == 'remove'">
-      <a :class="btn(col)"
+      <a :class="btn()"
         @click="$emit('remove', data, index)">
-        <i :class="attr(data, col, 'icon')" v-if="col.icon"></i>
-        <img :src="attr(data, col, 'image')" v-if="col.image">
-        {{ attr(data, col) }}
+        <i :class="attr('icon')" v-if="col.icon"></i>
+        <img :src="attr('image')" v-if="col.image">
+        {{ attr() }}
       </a>
     </template>
 
     <template v-else-if="col.type == 'button'">
-      <a href="#" :class="btn(col)" @click="col.click.call(data, index)">
-        <i :class="attr(data, col, 'icon')" v-if="col.icon"></i>
-        <img :src="attr(data, col, 'image')" v-if="col.image">
-        {{ attr(data, col) }}
+      <a href="#" :class="btn()" @click="col.click.call(data, index)">
+        <i :class="attr('icon')" v-if="col.icon"></i>
+        <img :src="attr('image')" v-if="col.image">
+        {{ attr() }}
       </a>
     </template>
 
     <template v-else-if="col.type == 'link'">
-      <a :class="btn(col)"
-        :href="attr(data, col, 'href')"
-        :target="attr(data, col, 'target')">
-        <i :class="attr(data, col, 'icon')" v-if="col.icon"></i>
-        <img :src="attr(data, col, 'image')" v-if="col.image">
-        {{ attr(data, col) }}
+      <a :class="btn()" :href="href()" :target="attr('target')">
+        <i :class="attr('icon')" v-if="col.icon"></i>
+        <img :src="attr('image')" v-if="col.image">
+        {{ attr() }}
       </a>
     </template>
 
@@ -80,10 +78,10 @@
     </template>
 
     <template v-else>
-      <span :class="attr(data, col, 'className')">
-        <i :class="attr(data, col, 'icon')" v-if="col.icon"></i>
-        <img :src="attr(data, col, 'image')" v-if="col.image && attr(data, col, 'image')">
-        {{ attr(data, col) }}
+      <span :class="attr('className')">
+        <i :class="attr('icon')" v-if="col.icon"></i>
+        <img :src="attr('image')" v-if="col.image && attr('image')">
+        {{ col.type == 'date' ? date() : attr() }}
       </span>
     </template>
   </span>
@@ -98,14 +96,9 @@
       return {
       }
     },
-    watch: {
-      toggleIcon: function(newVal) {
-        $(this.$refs.toggle).html('<i class="' + newVal + '"></i>')
-      }
-    },
     computed: {
       toggleIcon: function() {
-        if (!!this.attr(this.data, this.col) == !!this.col.reverse) {
+        if (!!this.attr() == !!this.col.reverse) {
           return 'fa fa-toggle-off fa-lg text-muted'
         } else {
           return 'fa fa-toggle-on fa-lg text-success'
@@ -115,36 +108,43 @@
     mounted: function() {
     },
     methods: {
-      btn: function(col) {
-        return 'btn-cell ' + (col.class || '');
+      btn: function() {
+        return 'btn-cell ' + (this.col.class || '');
       },
-      attr: function(obj, col, type) {
-        if (type && !col[type]) {
-          return ''
-        }
-        var fn = col[type] || col.value || col.bind || col.text
-        if (fn) {
-          if (typeof (fn) == 'function') {
-            return fn.call(obj, this.index)
+      attr: function(type) {
+        var val
+        if (!type) {
+          var attr = this.attr('attr') || this.attr('key')
+          if (attr) {
+            val = this.$getAttr(this.data, attr)
           } else {
-            return fn
-          }
-        } else if (col.attr) {
-          var val = objectPath.get(obj, col.attr)
-          if (val) {
-            if (col.type == 'date' && col.format) {
-              return moment(val).format(col.format)
-            } else if (col.map) {
-              return col.map[val] || val
-            } else {
-              return val
-            }
-          } else {
-            return ''
+            val = this.attr('value') || this.attr('text') || this.attr('bind')
           }
         } else {
-          return ''
+          val = this.$getAttr(this.col, type, {
+            data: this.data,
+            field: this.col,
+            index: this.index
+          })
         }
+        return val
+      },
+      date: function() {
+        var val = this.attr()
+        if (val && this.col.format) {
+          return moment(val).format(this.col.format)
+        } else {
+          return val
+        }
+      },
+      href: function() {
+        var self = this
+        var url = this.attr('href')
+        var match
+        while (match = url.match(/{(\w+)}/)) {
+          url = url.replace(match[0], this.$getAttr(this.data, match[1]))
+        }
+        return url
       },
       className: function(obj, col) {
         if (col.className) {
@@ -153,8 +153,10 @@
         return '';
       },
       toggle: function(obj, col) {
-        var val = objectPath.get(obj, col.attr)
-        objectPath.set(obj, col.attr, !val)
+        var val = this.$getAttr(obj, col.attr)
+        this.$setAttr(obj, col.attr, !val)
+        var val2 = this.$getAttr(obj, col.attr)
+        console.log('toggle', val, val2)
         delete obj.__v;
         this.$emit('save', obj, this.index)
       },

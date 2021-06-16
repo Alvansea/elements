@@ -1,9 +1,9 @@
 <template>
   <div class="d-inline-block">
     <form ref="form" class="form-inline" @submit.prevent="search">
-      <div class="input-group" :class="$class">
+      <div class="input-group" :class="_class">
         <input type="text" class="form-control" name="filter"
-          v-model="filter" :placeholder="$placeholder || '查找'">
+          v-model="filter" :placeholder="$attrs.placeholder || '查找'">
         <input type="hidden" name="filtered" value="1">
         <div class="input-group-append">
           <a class="btn btn-outline-secondary" v-if="filter" @click="clear"><i class="fa fa-times"></i></a>
@@ -18,7 +18,7 @@
 
 <script>
   module.exports = {
-    props: ['$class', '$placeholder'],
+    props: ['_class'],
     data: function() {
       return {
         filter: g_getQueryParams().filter || '',

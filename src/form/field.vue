@@ -43,9 +43,9 @@
 
       <template v-else-if="type == 'image'">
         <div>
-          <upload-button
+          <el-upload
             v-if="attr('upload')"
-            :$class="$resize(attr('upload.btn') || '', options)"
+            :class="$resize(attr('upload.btn') || '', options)"
             :name="attr('upload.name')"
             :url="attr('upload.url')"
             @done="attr('upload').done.call(data, arguments);$forceUpdate();"
@@ -54,7 +54,7 @@
               v-if="value() || attr('default')"
               :src="value() || attr('default')">
             <span class="btn btn-outline-secondary" v-else><i class="fa fa-plus"></i></span>
-          </upload-button>
+          </el-upload>
           <a class="btn btn-sm btn-outline-info corner-tl" href="javascript:;" @click="assign('')" v-if="value()">
             <i class="fa fa-lg fa-trash-alt"></i>
           </a>
@@ -62,14 +62,14 @@
       </template>
 
       <template v-else-if="type == 'json'">
-        <json-editor
+        <el-json-editor
           :value="value()"
-          @input="assign($event)"></json-editor>
+          @input="assign($event)"></el-json-editor>
       </template>
 
       <template v-else-if="type == 'date'">
-        <date-time-picker
-          :$class="resize('form-control')"
+        <el-date-time-picker
+          :_class="resize('form-control')"
           :name="attr('name')"
           :format="attr('format')"
           :value="value()"
@@ -77,7 +77,7 @@
           :enabled-dates="attr('enabledDates')"
           :min-date="attr('minDate')"
           :max-date="attr('maxDate')"
-          @input="assign($event)"></date-time-picker>
+          @input="assign($event)"></el-date-time-picker>
       </template>
 
       <!-- prmitive html form controls -->
@@ -210,14 +210,21 @@
       this.assign(this.value() || this.attr('default'))
     },
     methods: {
+      attr: function(type) {
+        return this.$getAttr(this.field, type, {
+          data: this.data,
+          field: this.field,
+          index: this.index
+        })
+      },
       value: function() {
-        var val = this.attr('value') || this.attr('bind') || this.attr('text')
+        var val = this.attr('value') || this.attr('text')
         if (val) return val
 
         var attr = this.attr('attr')
         if (!attr) return null
 
-        val = objectPath.get(this.data, attr)
+        val = this.$getAttr(this.data, attr)
         if (!val) return null
 
         var type = (this.attr('type') || '').toLowerCase()
@@ -226,7 +233,7 @@
           var format = this.attr('format') || 'YYYY-MM-DD HH:mm'
           return moment(val).format(format)
         } else if (options && options.list && options.value) {
-          return objectPath.get(val, options.value)
+          return this.$getAttr(val, options.value)
         } else {
           return val
         }
@@ -251,8 +258,8 @@
           }
           return options.list.map(function(iter) {
             return {
-              name: objectPath.get(iter, options.name),
-              value: objectPath.get(iter, options.value),
+              name: this.$getAttr(iter, options.name),
+              value: this.$getAttr(iter, options.value),
             }
           })
         } else {
@@ -267,19 +274,9 @@
       resize: function(classnames) {
         return this.$resize(classnames, this.options)
       },
-      attr: function(type) {
-        var val = null
-        if (type) {
-          val = objectPath.get(this.field, type)
-          if (typeof (val) == 'function') {
-            val = val.call(this.data, this.index)
-          }
-        }
-        return val
-      },
       validate: function() {
         var attr = this.attr('attr') || this.attr('value')
-        var val = objectPath.get(this.data, attr)
+        var val = this.$getAttr(this.data, attr)
         if (this.attr('required')) {
           if (val === null) {
             return '<i class="text-danger">*</i> <b>' + this.field.label + '</b> 不能为空'
@@ -299,26 +296,26 @@
         if (options && options.list && options.name && options.value) {
           for (var i = 0; i < options.list.length; i++) {
             var item = options.list[i]
-            if (objectPath.get(item, options.value) == val) {
+            if (this.$getAttr(item, options.value) == val) {
               val = item
               break
             }
           }
         }
-        objectPath.set(this.data, this.attr('attr'), val);
+        this.$setAttr(this.data, this.attr('attr'), val);
         if (typeof (this.field.onChange) == 'function') {
           this.field.onChange.call(this.data, val)
         }
       },
       contain: function(option) {
         if (!option) return false
-        var list = objectPath.get(this.data, this.attr('attr')) || []
+        var list = this.$getAttr(this.data, this.attr('attr')) || []
         var val = this.$isNullOrUndefined(option.value) ? option : option.value
         var index = list.indexOf(val)
         return index >= 0
       },
       check: function(option) {
-        var list = objectPath.get(this.data, this.attr('attr')) || []
+        var list = this.$getAttr(this.data, this.attr('attr')) || []
         var val = this.$isNullOrUndefined(option.value) ? option : option.value
         var index = list.indexOf(val)
         if (index >= 0) {
@@ -326,7 +323,7 @@
         } else {
           list.push(val)
         }
-        objectPath.set(this.data, this.attr('attr'), list);
+        this.$setAttr(this.data, this.attr('attr'), list);
         this.$forceUpdate()
       }
     },

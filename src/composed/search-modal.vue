@@ -1,5 +1,5 @@
 <template>
-  <modal ref="searchModal" :title="title || '查找'" $class="fade">
+  <el-modal ref="searchModal" :title="title || '查找'" class="fade">
     <form class="form" method="GET" :action="api || ''">
       <el-field v-for="field in view.fields"
         v-if="!field.hidden || !field.hidden.call(searchOptions)"
@@ -12,7 +12,7 @@
         <button type="submit" class="btn btn-sm btn-primary">确定</button>
       </div>
     </form>
-  </modal>
+  </el-modal>
 </template>
 
 <script>

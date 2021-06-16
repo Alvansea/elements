@@ -32,12 +32,12 @@
       </el-table-cell>
     </td>
     <td v-if="!view.hideRowButtons">
-      <a class="btn-cell" @click="edit(data, index)" title="编辑">
+      <a class="btn-cell" role="button" @click="edit(data, index)" title="编辑">
         <i class="fa fa-edit"></i></a>
-      <a class="btn-cell" @click="clone(data, index)" title="克隆">
+      <a class="btn-cell" role="button" @click="clone(data, index)" title="克隆">
         <i class="far fa-clone"></i></a>
       <slot name="actions" v-bind="data"></slot>
-      <a class="btn-cell" @click="$emit('remove', data, index)" title="删除">
+      <a class="btn-cell" role="button" @click="$emit('remove', data, index)" title="删除">
         <i class="fa fa-trash-alt"></i></a>
     </td>
   </tr>
@@ -60,12 +60,12 @@
       },
       getAttr: function(obj, col) {
         if (col.type == 'date' && col.attr && col.format) {
-          var date = objectPath.get(obj, col.attr);
+          var date = this.$getAttr(obj, col.attr);
           return moment(date).format(col.format);
         } else if (typeof (col.bind) == 'function') {
           return col.bind.call(this, obj);
         } else if (col.attr) {
-          return objectPath.get(obj, col.attr);
+          return this.$getAttr(obj, col.attr);
         } else {
           return null;
         }

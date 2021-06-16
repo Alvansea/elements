@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown d-inline">
-    <a type="button" data-toggle="dropdown" class="dropdown-toggle" :class="$class">
+    <a type="button" data-toggle="dropdown" class="dropdown-toggle" :class="_class">
       <b :class="highlight" v-if="_selected">{{ _selected }}</b>
       <b v-else>{{ label }}</b>
       <span class="caret"></span>
@@ -19,7 +19,7 @@
   module.exports = {
     template: '#ColumnFilter',
     props: [
-      '$class', 'label', 'column', 'options', 'empty', 'highlight'
+      '_class', 'label', 'column', 'options', 'empty', 'highlight'
     ],
     computed: {
       _selected: function() {

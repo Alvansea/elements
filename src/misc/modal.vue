@@ -1,5 +1,5 @@
 <template>
-  <div ref="modal" class="modal" :class="$class">
+  <div ref="modal" class="modal">
     <div :class="dialogClass">
       <div class="modal-content">
         <div class="modal-header">
@@ -26,7 +26,7 @@
 <script>
   module.exports = {
     props: [
-      '$class', 'title', 'hideClose', 'size'
+      'title', 'hideClose', 'size'
     ],
     computed: {
       dialogClass: function() {

@@ -4,10 +4,7 @@ Vue.component('el-table-row', require('./table/table-row.vue'))
 Vue.component('el-table', require('./table/table.vue'))
 
 // form
-Vue.component('el-date-time-picker', require('./form/date-time-picker.vue'))
 Vue.component('el-switch', require('./form/switch.vue'))
-Vue.component('el-upload', require('./form/upload.vue'))
-Vue.component('el-json-editor', require('./form/json-editor.vue'))
 Vue.component('el-field', require('./form/field.vue'))
 Vue.component('el-form', require('./form/form.vue'))
 
@@ -15,6 +12,7 @@ Vue.component('el-form', require('./form/form.vue'))
 Vue.component('el-toolbar', require('./composed/toolbar.vue'))
 Vue.component('el-workbench', require('./composed/workbench.vue'))
 Vue.component('el-search-modal', require('./composed/search-modal.vue'))
+Vue.component('el-search-form', require('./composed/search-form.vue'))
 Vue.component('el-set-editor', require('./composed/set-editor.vue'))
 Vue.component('el-mapping-editor', require('./composed/mapping-editor.vue'))
 
@@ -26,6 +24,26 @@ Vue.component('el-pagination', require('./misc/pagination.vue'))
 Vue.component('el-modal', require('./misc/modal.vue'))
 Vue.component('el-date-picker', require('./misc/date-picker.vue'))
 Vue.component('el-time-select', require('./misc/time-select.vue'))
+
+// external
+Vue.component('el-date-time-picker', require('./external/date-time-picker.vue'))
+Vue.component('el-upload', require('./external/upload.vue'))
+Vue.component('el-json-editor', require('./external/json-editor.vue'))
+
+const objectPath = require('object-path')
+Vue.prototype.$getAttr = function(obj, attr, context) {
+  var val = objectPath.get(obj, attr)
+  if (val) {
+    if (typeof (val) == 'function') {
+      return val.call(context)
+    } else {
+      return val
+    }
+  }
+}
+Vue.prototype.$setAttr = function(obj, attr, val) {
+  return objectPath.set(obj, attr, val)
+}
 
 Vue.prototype.$getQueryParams = function() {
   var params = {};
@@ -76,26 +94,4 @@ Vue.prototype.$resize = function(classnames, options) {
 
 Vue.prototype.$isNullOrUndefined = function(val) {
   return typeof (val) == 'undefined' || val === null
-}
-
-var ResourceMixin = {
-  methods: {
-    $save: function(item, index, cb) {
-      if (this.save) {
-        this.save(item, index, cb);
-      } else if (this.api) {
-        Vue.resource(this.api + '{/id}')
-          .save({ id: item._id || item.id }, item)
-          .then(function(res) {
-            cb && cb(res.body.errMsg, res.body);
-          })
-          .catch(function(res) {
-            console.log('err', res)
-            cb && cb(res.body || res)
-          })
-      } else {
-        cb && cb(new Error('No api or save method defined!'))
-      }
-    }
-  }
 }

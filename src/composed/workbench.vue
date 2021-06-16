@@ -1,6 +1,6 @@
 <template>
   <div>
-    <toolbar :view="view.toolbar"
+    <el-toolbar :view="view.toolbar"
       :pagination="view.table && view.table.pagination"
       v-if="view.toolbar">
       <a :class="$resize('btn btn-outline-primary mr-1', view.toolbar)"
@@ -8,7 +8,7 @@
         @click="addItem()">
         <i class="fa fa-plus"></i> 添加</a>
       <slot name="toolbar"></slot>
-    </toolbar>
+    </el-toolbar>
 
     <div class="table-responsive" v-if="view.table">
       <el-table
@@ -34,9 +34,9 @@
       </el-table>
     </div>
 
-    <pagination :pagination="view.table && view.table.pagination"></pagination>
+    <el-pagination :pagination="view.table && view.table.pagination"></el-pagination>
 
-    <modal ref="editModal" title="编辑" $class="fade" size="lg">
+    <el-modal ref="editModal" title="编辑" class="fade" size="lg">
       <el-form
         v-if="view.form"
         :data="current"
@@ -46,11 +46,12 @@
         @save="onSave"
         @cancel="cancelEdit">
       </el-form>
-    </modal>
+    </el-modal>
   </div>
 </template>
 
 <script>
+  const ResourceMixin = require('../script/ResourceMixin.js')
   module.exports = {
     template: '#WorkbenchTemplate',
     props: [

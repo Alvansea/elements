@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex align-items-center" :class="$class" v-if="count && start != end">
+  <div class="d-flex align-items-center" v-if="count && start != end">
     <ul class="pagination mb-0">
       <li class="page-item" v-for="page in pages" :class="linkClass(page, 'hidden-xs')">
         <a class="page-link" :href="href(page)" v-html="page.label || page.index"></a>
@@ -13,7 +13,7 @@
 
 <script>
   module.exports = {
-    props: ['mode', '$class', 'pagination'],
+    props: ['mode', 'pagination'],
     data: function() {
       var data = Object.assign({
         count: 0

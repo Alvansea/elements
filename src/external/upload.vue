@@ -1,5 +1,5 @@
 <template>
-  <span class="fileinput-button" :class="$class">
+  <span class="fileinput-button">
     <slot></slot>
     <input ref="fileupload" type="file" :name="fieldName">
   </span>
@@ -8,7 +8,7 @@
 <script>
   module.exports = {
     props: [
-      '$class', 'name', 'url',
+      'name', 'url',
     ],
     data: function() {
       return {

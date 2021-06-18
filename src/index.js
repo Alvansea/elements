@@ -5,7 +5,7 @@ Vue.component('el-table', require('./table/table.vue'))
 
 // form
 Vue.component('el-switch', require('./form/switch.vue'))
-Vue.component('el-field', require('./form/field.vue'))
+Vue.component('el-form-field', require('./form/field.vue'))
 Vue.component('el-form', require('./form/form.vue'))
 
 // composed
@@ -43,6 +43,15 @@ Vue.prototype.$getAttr = function(obj, attr, context) {
 }
 Vue.prototype.$setAttr = function(obj, attr, val) {
   return objectPath.set(obj, attr, val)
+}
+
+Vue.prototype.$format = function(template, obj) {
+  var text = template + ''
+  var match
+  while (match = text.match(/{(\w+)}/)) {
+    text = text.replace(match[0], this.$getAttr(obj, match[1]))
+  }
+  return text
 }
 
 Vue.prototype.$getQueryParams = function() {

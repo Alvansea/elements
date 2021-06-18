@@ -19,7 +19,7 @@
           v-for="field in group.fields"
           v-if="!isHidden(field)">
           <div class="form-group">
-            <el-field ref="fields" :data="copy" :field="field" :options="view">
+            <el-form-field ref="fields" :data="copy" :field="field" :options="view">
               <!-- pass through scoped slots -->
               <template v-for="(_, scoped_slot_name) in $scopedSlots"
                 #[scoped_slot_name]="slotData">
@@ -30,7 +30,7 @@
               <template v-for="(_, slot_name) in $slots" #[slot_name]>
                 <slot :name="slot_name"></slot>
               </template>
-            </el-field>
+            </el-form-field>
           </div>
         </div>
       </div>

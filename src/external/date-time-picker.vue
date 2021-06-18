@@ -7,8 +7,7 @@
       :name="name"
       :value="date"
       :required="required"
-      :disabled="disabled"
-      @click="debug">
+      :disabled="disabled">
     <div class="input-group-append">
       <span class="input-group-text text-secondary" @click="$refs.picker.focus()"><i
           class="fa fa-calendar-alt"></i></span>
@@ -18,7 +17,6 @@
 </template>
 
 <script>
-  $.fn.datetimepicker = require('bootstrap4-datetimepicker')
   module.exports = {
     template: '#DateTimePickerTemplate',
     props: [
@@ -27,6 +25,7 @@
     data: function() {
       return {
         picker: null,
+        elem: null,
         localFormat: this.format || 'YYYY-MM-DD HH:mm',
         date: null
       }
@@ -42,7 +41,6 @@
     mounted: function() {
       this.date = this.parseValue(this.value);
       this.init()
-      $(this.$refs.picker).on("dp.change", this.onChange);
     },
     methods: {
       init: function() {
@@ -67,10 +65,9 @@
           // inline: true,
           enabledDates: this.enabledDates || [],
         }
-        this.picker = $(this.$refs.picker).datetimepicker(options)
-      },
-      debug: function() {
-        var self = this
+        this.elem = $(this.$refs.picker)
+        this.picker = this.elem.datetimepicker(options)
+        this.elem.on("dp.change", this.onChange)
       },
       parseValue: function(val) {
         var date = val || this.default;
@@ -82,7 +79,6 @@
       },
       onChange: function() {
         var date = $(this.$refs.picker).val();
-        console.log('date change', date)
         this.$emit('input', date)
       }
     }

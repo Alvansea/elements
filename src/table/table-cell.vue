@@ -113,12 +113,13 @@
       },
       attr: function(type) {
         var val
+
         if (!type) {
-          var attr = this.attr('attr') || this.attr('key')
-          if (attr) {
-            val = this.$getAttr(this.data, attr)
-          } else {
+          if ('value' in this.col || 'text' in this.col || 'bind' in this.col) {
             val = this.attr('value') || this.attr('text') || this.attr('bind')
+          } else {
+            var attr = this.attr('attr') || this.attr('key')
+            val = this.$getAttr(this.data, attr)
           }
         } else {
           val = this.$getAttr(this.col, type, {
@@ -138,13 +139,7 @@
         }
       },
       href: function() {
-        var self = this
-        var url = this.attr('href')
-        var match
-        while (match = url.match(/{(\w+)}/)) {
-          url = url.replace(match[0], this.$getAttr(this.data, match[1]))
-        }
-        return url
+        return this.$format(this.attr('href'), this.data)
       },
       className: function(obj, col) {
         if (col.className) {

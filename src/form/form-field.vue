@@ -24,7 +24,7 @@
 
       <template v-else-if="type == '#link'">
         <a :class="resize('form-control-plaintext')"
-          :href="attr('href')"
+          :href="href()"
           :target="attr('target')">
           {{ value() }}
         </a>
@@ -237,6 +237,9 @@
         } else {
           return val
         }
+      },
+      href: function() {
+        return this.$format(this.attr('href'), this.data)
       },
       selectOptions: function() {
         if (this.type == 'switch') {

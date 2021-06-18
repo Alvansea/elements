@@ -29,6 +29,7 @@ gulp.task('bundle', async () => {
       './node_modules/blueimp-file-upload/js/vendor/jquery.ui.widget.js',
       './node_modules/blueimp-file-upload/js/jquery.iframe-transport.js',
       './node_modules/blueimp-file-upload/js/jquery.fileupload.js',
+      './node_modules/bootstrap4-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
       './dist/components.js',
     ])
       .pipe(concat('elements.min.js'))

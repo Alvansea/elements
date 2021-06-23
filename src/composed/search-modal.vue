@@ -17,7 +17,6 @@
 
 <script>
   module.exports = {
-    template: '#SearchModalTemplate',
     props: [
       'view', 'title', 'api'
     ],

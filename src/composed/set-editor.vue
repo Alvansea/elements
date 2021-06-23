@@ -83,7 +83,6 @@
 
 <script>
   module.exports = {
-    template: '#SetEditor',
     props: [
       'data', 'view', 'label',
       'searchLabel', 'search', 'searchApi', 'sortable',
@@ -94,6 +93,9 @@
         searchFilter: '',
         searchResults: [],
       }
+    },
+    mounted: function() {
+      alert('el-set-editor is deprecated, using el-binding instead');
     },
     methods: {
       queryItems: function() {

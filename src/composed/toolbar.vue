@@ -25,7 +25,6 @@
 
 <script>
   module.exports = {
-    template: '#ToolbarTemplate',
     props: ['view', 'pagination'],
     computed: {
       _filtered: function() {

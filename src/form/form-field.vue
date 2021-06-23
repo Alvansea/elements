@@ -171,7 +171,6 @@
 
 <script>
   module.exports = {
-    template: '#DataFieldTemplate',
     props: [
       'field', 'data', 'options', 'caller'
     ],

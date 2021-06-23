@@ -18,7 +18,6 @@
 
 <script>
   module.exports = {
-    template: '#DateTimePickerTemplate',
     props: [
       'value', 'required', 'disabled', 'format', 'default', 'name', '_class', 'enabledDates', 'minDate', 'maxDate', 'config'
     ],

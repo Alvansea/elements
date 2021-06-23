@@ -51,7 +51,6 @@
 <script>
   const ResourceMixin = require('../script/ResourceMixin.js')
   module.exports = {
-    template: '#DataTableTemplate',
     props: [
       'data', 'view', 'api', 'save'
     ],

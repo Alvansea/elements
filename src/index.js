@@ -4,8 +4,7 @@ Vue.component('el-table-row', require('./table/table-row.vue'))
 Vue.component('el-table', require('./table/table.vue'))
 
 // form
-Vue.component('el-switch', require('./form/switch.vue'))
-Vue.component('el-form-field', require('./form/field.vue'))
+Vue.component('el-form-field', require('./form/form-field.vue'))
 Vue.component('el-form', require('./form/form.vue'))
 
 // composed
@@ -13,6 +12,7 @@ Vue.component('el-toolbar', require('./composed/toolbar.vue'))
 Vue.component('el-workbench', require('./composed/workbench.vue'))
 Vue.component('el-search-modal', require('./composed/search-modal.vue'))
 Vue.component('el-search-form', require('./composed/search-form.vue'))
+Vue.component('el-binding', require('./composed/binding.vue'))
 Vue.component('el-set-editor', require('./composed/set-editor.vue'))
 Vue.component('el-mapping-editor', require('./composed/mapping-editor.vue'))
 

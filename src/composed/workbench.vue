@@ -53,7 +53,6 @@
 <script>
   const ResourceMixin = require('../script/ResourceMixin.js')
   module.exports = {
-    template: '#WorkbenchTemplate',
     props: [
       'data', 'view', 'save', 'api', 'hidden'
     ],

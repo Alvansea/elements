@@ -64,7 +64,6 @@
 
 <script>
   module.exports = {
-    template: '#MappingEditorTemplate',
     props: [
       'data', 'view', 'searchLabel', 'search', 'searchApi', 'sortable'
     ],
@@ -73,6 +72,9 @@
         searchFilter: '',
         searchResults: [],
       }
+    },
+    mounted: function() {
+      alert('el-mapping-editor is deprecated, using el-binding instead');
     },
     methods: {
       queryItems: function() {

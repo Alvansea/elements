@@ -8,7 +8,6 @@
 
 <script>
   module.exports = {
-    template: '#TabsTemplate',
     props: ['tabs'],
   }
 </script>

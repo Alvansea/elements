@@ -9444,8 +9444,189 @@ exports.insert = function (css) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 module.exports = {
-  template: '#MappingEditorTemplate',
+  props: [
+    'data', 'view', 'source',
+  ],
+  data: function() {
+    return {
+      target: this.data || [],
+      searchFilter: '',
+      searchResults: [],
+      sourceCol: 'col',
+      targetCol: 'col',
+    }
+  },
+  watch: {
+    data: function(newVal, oldVal) {
+      this.target = newVal
+    }
+  },
+  mounted: function() {
+    if (this.view.col) {
+      var parts = this.view.col.split('|')
+      this.sourceCol = 'col-' + parts[0]
+      this.targetCol = 'col-' + parts[1]
+    }
+  },
+  methods: {
+    queryItems: function() {
+      var self = this;
+      if (!this.searchFilter) {
+        return;
+      }
+
+      if (this.view.source.api) {
+        Vue.resource(this.view.source.api).get({
+          filter: self.searchFilter
+        }).then(function(res) {
+          if (res.body.errMsg) {
+            return g_alert(res.body.errMsg);
+          }
+          self.searchResults = res.body;
+        })
+      } else if (this.view.source.get) {
+        this.view.source.get(self.searchFilter, function(err, data) {
+          if (err) {
+            return g_alert(err);
+          }
+          self.searchResults = data;
+        })
+      } else {
+        g_alert('查询API错误');
+      }
+    },
+    clearFilter: function() {
+      this.searchFilter = ''
+      this.searchResults = []
+    },
+    getIndex: function(item) {
+      for (var i in this.target) {
+        if (this.target[i]._id == item._id) {
+          return i;
+        }
+      }
+      return -1;
+    },
+    transform: function(item) {
+      if (typeof (this.view.transform) == 'function') {
+        return this.view.transform(item)
+      } else {
+        return item
+      }
+    },
+    addItem: function(item) {
+      this.target.push(this.transform(item))
+      this.$emit('change', this.target)
+    },
+    removeItem: function(index) {
+      if (!confirm('请再次确认移除该')) {
+        return;
+      }
+      this.target.splice(index, 1)
+      this.$emit('change', this.target)
+    },
+    moveItem: function(index, offset) {
+      var item = this.target.splice(index, 1)[0];
+      this.target.splice(index + offset, 0, item);
+      this.$emit('change', this.target);
+    },
+    doSave: function() {
+      this.$emit('save', this.target);
+    }
+  }
+}
+
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n  <form class=\"form-inline\" @submit.prevent=\"queryItems()\">\n    <div class=\"input-group input-group-sm\">\n      <input type=\"text\" class=\"form-control\" v-model=\"searchFilter\" :placeholder=\"searchLabel\">\n      <div class=\"input-group-append\">\n        <a class=\"btn btn-outline-secondary\" v-if=\"searchFilter\" @click=\"clearFilter()\">\n          <i class=\"fa fa-times\"></i>\n        </a>\n        <button type=\"submit\" class=\"btn btn-secondary\"><i class=\"fa fa-search\"></i></button>\n      </div>\n    </div>\n  </form>\n  <div class=\"row\">\n    <div class=\"pt-3\" :class=\"sourceCol\">\n      <b class=\"text-secondary\">搜索结果</b>\n      <table class=\"table table-sm table-striped\">\n        <thead>\n          <tr>\n            <th v-for=\"column in view.source.columns\">{{ column.label }}</th>\n            <th>操作</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr v-for=\"(item, itemIndex) in searchResults\">\n            <td v-for=\"(column, colIndex) in view.source.columns\">\n              <data-table-cell :data=\"item\" :col=\"column\" :index=\"colIndex\"></data-table-cell>\n            </td>\n            <td>\n              <a href=\"javascript:;\" class=\"fa fa-plus text-secondary\" @click=\"addItem(item)\">\n              </a>\n            </td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n    <div class=\"pt-3\" :class=\"targetCol\">\n      <b class=\"text-secondary\">数据管理</b>\n      <table class=\"table table-sm table-striped\">\n        <thead>\n          <tr>\n            <th v-for=\"column in view.target.columns\">{{ column.label }}</th>\n            <th v-if=\"view.target.sortable\">排序</th>\n            <th>操作</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr v-for=\"(item, itemIndex) in target\">\n            <td v-for=\"(column, colIndex) in view.target.columns\">\n              <el-field :field=\"column\" :data=\"item\" :options=\"{size: 'sm'}\"></el-field>\n            </td>\n            <td v-if=\"view.target.sortable\">\n              <a href=\"#\" class=\"fa fa-chevron-up text-secondary\" @click=\"moveItem(itemIndex, -1)\">\n              </a>\n              <a href=\"#\" class=\"fa fa-chevron-down text-secondary\" @click=\"moveItem(itemIndex, 1)\">\n              </a>\n            </td>\n            <td>\n              <a href=\"#\" class=\"fa fa-trash-alt text-secondary\" @click=\"removeItem(itemIndex)\">\n              </a>\n            </td>\n          </tr>\n        </tbody>\n      </table>\n    </div>\n    <div class=\"col-12 text-right\">\n      <a class=\"btn btn-sm btn-outline-secondary\" data-dismiss=\"modal\">取消</a>\n      <a class=\"btn btn-sm btn-success\" @click=\"doSave\">保存</a>\n    </div>\n  </div>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-a2455f8e", module.exports)
+  } else {
+    hotAPI.update("_v-a2455f8e", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":6,"vue-hot-reload-api":4}],10:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = {
   props: [
     'data', 'view', 'searchLabel', 'search', 'searchApi', 'sortable'
   ],
@@ -9454,6 +9635,9 @@ module.exports = {
       searchFilter: '',
       searchResults: [],
     }
+  },
+  mounted: function() {
+    alert('el-mapping-editor is deprecated, using el-binding instead');
   },
   methods: {
     queryItems: function() {
@@ -9526,7 +9710,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-695c3ac8", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":4}],10:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":4}],11:[function(require,module,exports){
 
 
 
@@ -9577,54 +9761,6 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-d4677906", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":4}],11:[function(require,module,exports){
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-module.exports = {
-  template: '#SearchModalTemplate',
-  props: [
-    'view', 'title', 'api'
-  ],
-  data: function() {
-    return {
-      searchOptions: this.$getQueryParams(),
-    }
-  },
-  methods: {
-    modal: function() {
-      this.$refs.searchModal.modal()
-    }
-  }
-}
-
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<el-modal ref=\"searchModal\" :title=\"title || '查找'\" class=\"fade\">\n  <form class=\"form\" method=\"GET\" :action=\"api || ''\">\n    <el-field v-for=\"field in view.fields\" v-if=\"!field.hidden || !field.hidden.call(searchOptions)\" :data=\"searchOptions\" :field=\"field\" :options=\"view\">\n    </el-field>\n    <input type=\"hidden\" name=\"filtered\" value=\"1\">\n    <div class=\"form-group text-right mt-3\">\n      <button type=\"submit\" class=\"btn btn-sm btn-primary\">确定</button>\n    </div>\n  </form>\n</el-modal>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-3bd2ccc4", module.exports)
-  } else {
-    hotAPI.update("_v-3bd2ccc4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
 },{"vue":6,"vue-hot-reload-api":4}],12:[function(require,module,exports){
 
 
@@ -9644,6 +9780,53 @@ if (module.hot) {(function () {  module.hot.accept()
 
 
 
+module.exports = {
+  props: [
+    'view', 'title', 'api'
+  ],
+  data: function() {
+    return {
+      searchOptions: this.$getQueryParams(),
+    }
+  },
+  methods: {
+    modal: function() {
+      this.$refs.searchModal.modal()
+    }
+  }
+}
+
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<el-modal ref=\"searchModal\" :title=\"title || '查找'\" class=\"fade\">\n  <form class=\"form\" method=\"GET\" :action=\"api || ''\">\n    <el-form-field v-for=\"field in view.fields\" v-if=\"!field.hidden || !field.hidden.call(searchOptions)\" :data=\"searchOptions\" :field=\"field\" :options=\"view\">\n    </el-form-field>\n    <input type=\"hidden\" name=\"filtered\" value=\"1\">\n    <div class=\"form-group text-right mt-3\">\n      <button type=\"submit\" class=\"btn btn-sm btn-primary\">确定</button>\n    </div>\n  </form>\n</el-modal>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-3bd2ccc4", module.exports)
+  } else {
+    hotAPI.update("_v-3bd2ccc4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":6,"vue-hot-reload-api":4}],13:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9711,7 +9894,6 @@ if (module.hot) {(function () {  module.hot.accept()
 
 
 module.exports = {
-  template: '#SetEditor',
   props: [
     'data', 'view', 'label',
     'searchLabel', 'search', 'searchApi', 'sortable',
@@ -9722,6 +9904,9 @@ module.exports = {
       searchFilter: '',
       searchResults: [],
     }
+  },
+  mounted: function() {
+    alert('el-set-editor is deprecated, using el-binding instead');
   },
   methods: {
     queryItems: function() {
@@ -9804,7 +9989,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-41e164b4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":4}],13:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":4}],14:[function(require,module,exports){
 
 
 
@@ -9832,7 +10017,6 @@ if (module.hot) {(function () {  module.hot.accept()
 
 
 module.exports = {
-  template: '#ToolbarTemplate',
   props: ['view', 'pagination'],
   computed: {
     _filtered: function() {
@@ -9860,7 +10044,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2c18c22f", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":4}],14:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":4}],15:[function(require,module,exports){
 
 
 
@@ -9916,7 +10100,6 @@ if (module.hot) {(function () {  module.hot.accept()
 
 const ResourceMixin = require('../script/ResourceMixin.js')
 module.exports = {
-  template: '#WorkbenchTemplate',
   props: [
     'data', 'view', 'save', 'api', 'hidden'
   ],
@@ -10011,7 +10194,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-44560b73", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../script/ResourceMixin.js":29,"vue":6,"vue-hot-reload-api":4}],15:[function(require,module,exports){
+},{"../script/ResourceMixin.js":29,"vue":6,"vue-hot-reload-api":4}],16:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.bootstrap-datetimepicker-widget[_v-2752a05c] {\n  width: 16em !important;\n  padding-top: 1em !important;\n}\n\n.datepicker-days[_v-2752a05c] {\n  width: auto;\n  font-size: .85em;\n}\n\n.datepicker-days .table-condensed thead tr:first-child th[_v-2752a05c] {\n  padding-bottom: .8em;\n}\n\n.datepicker-days .table-condensed tbody td[_v-2752a05c] {\n  padding-top: .6em;\n  padding-bottom: .6em;\n}\n")
 
@@ -10034,7 +10217,6 @@ var __vueify_style__ = __vueify_insert__.insert("\n.bootstrap-datetimepicker-wid
 
 
 module.exports = {
-  template: '#DateTimePickerTemplate',
   props: [
     'value', 'required', 'disabled', 'format', 'default', 'name', '_class', 'enabledDates', 'minDate', 'maxDate', 'config'
   ],
@@ -10116,7 +10298,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-2752a05c", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":4,"vueify/lib/insert-css":8}],16:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":4,"vueify/lib/insert-css":8}],17:[function(require,module,exports){
 
 
 
@@ -10197,7 +10379,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-60eecfdf", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":4}],17:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":4}],18:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.fileinput-button[_v-79cc1aa4] {\n  position: relative;\n  overflow: hidden;\n  display: inline-block;\n}\n\n.fileinput-button input[_v-79cc1aa4] {\n  position: absolute;\n  top: 0;\n  right: 0;\n  margin: 0;\n  opacity: 0;\n  filter: 'alpha(opacity=0)';\n  -ms-filter: 'alpha(opacity=0)';\n  font-size: 200px !important;\n  direction: ltr;\n  cursor: pointer;\n}\n")
 
@@ -10265,9 +10447,9 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-79cc1aa4", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":4,"vueify/lib/insert-css":8}],18:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":4,"vueify/lib/insert-css":8}],19:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
-var __vueify_style__ = __vueify_insert__.insert("\n.corner-tl[_v-51cdbe40] {\n  position: absolute;\n  top: 1em;\n  left: 2em;\n}\n")
+var __vueify_style__ = __vueify_insert__.insert("\n.corner-tl[_v-6c87118a] {\n  position: absolute;\n  top: 1em;\n  left: 2em;\n}\n")
 
 
 
@@ -10441,7 +10623,6 @@ var __vueify_style__ = __vueify_insert__.insert("\n.corner-tl[_v-51cdbe40] {\n  
 
 
 module.exports = {
-  template: '#DataFieldTemplate',
   props: [
     'field', 'data', 'options', 'caller'
   ],
@@ -10603,22 +10784,22 @@ module.exports = {
 }
 
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\" _v-51cdbe40=\"\">\n  <label :class=\"col_left\" v-if=\"field.label !== null\" _v-51cdbe40=\"\">\n    <span v-if=\"type != 'boolean' &amp;&amp; type != 'checkbox'\" _v-51cdbe40=\"\">\n      {{ field.label }}&nbsp;<i class=\"text-danger\" v-if=\"attr('required')\" _v-51cdbe40=\"\">*</i>\n    </span>\n  </label>\n\n  <div :class=\"col_right\" v-if=\"!attr('hidden')\" _v-51cdbe40=\"\">\n\n    <!-- component injections -->\n\n    <template v-if=\"attr('slot')\">\n      <slot :name=\"attr('slot')\" v-bind=\"_slotData\" _v-51cdbe40=\"\"></slot>\n    </template>\n\n    <template v-else-if=\"attr('component')\">\n      <keep-alive _v-51cdbe40=\"\">\n        <component :is=\"attr('component')\" v-bind=\"_componentProps\" _v-51cdbe40=\"\">\n      </component></keep-alive>\n    </template>\n\n    <!-- statics -->\n\n    <template v-else-if=\"type == '#link'\">\n      <a :class=\"resize('form-control-plaintext')\" :href=\"href()\" :target=\"attr('target')\" _v-51cdbe40=\"\">\n        {{ value() }}\n      </a>\n    </template>\n    <template v-else-if=\"type[0] == '#' || type == 'static'\">\n      <input type=\"text\" :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" :disabled=\"true\" :placeholder=\"attr('placeholder')\" _v-51cdbe40=\"\">\n    </template>\n\n    <!-- composed form inputs -->\n\n    <template v-else-if=\"type == 'image'\">\n      <div _v-51cdbe40=\"\">\n        <el-upload v-if=\"attr('upload')\" :class=\"$resize(attr('upload.btn') || '', options)\" :name=\"attr('upload.name')\" :url=\"attr('upload.url')\" @done=\"attr('upload').done.call(data, arguments);$forceUpdate();\" @error=\"attr('upload').error.call(data, arguments)\" _v-51cdbe40=\"\">\n          <img class=\"img-thumbnail mb-1\" :style=\"attr('style')\" v-if=\"value() || attr('default')\" :src=\"value() || attr('default')\" _v-51cdbe40=\"\">\n          <span class=\"btn btn-outline-secondary\" v-else=\"\" _v-51cdbe40=\"\"><i class=\"fa fa-plus\" _v-51cdbe40=\"\"></i></span>\n        </el-upload>\n        <a class=\"btn btn-sm btn-outline-info corner-tl\" href=\"javascript:;\" @click=\"assign('')\" v-if=\"value()\" _v-51cdbe40=\"\">\n          <i class=\"fa fa-lg fa-trash-alt\" _v-51cdbe40=\"\"></i>\n        </a>\n      </div>\n    </template>\n\n    <template v-else-if=\"type == 'json'\">\n      <el-json-editor :value=\"value()\" @input=\"assign($event)\" _v-51cdbe40=\"\"></el-json-editor>\n    </template>\n\n    <template v-else-if=\"type == 'date'\">\n      <el-date-time-picker :_class=\"resize('form-control')\" :name=\"attr('name')\" :format=\"attr('format')\" :value=\"value()\" :disabled=\"attr('disabled')\" :enabled-dates=\"attr('enabledDates')\" :min-date=\"attr('minDate')\" :max-date=\"attr('maxDate')\" @input=\"assign($event)\" _v-51cdbe40=\"\"></el-date-time-picker>\n    </template>\n\n    <!-- prmitive html form controls -->\n\n    <template v-else-if=\"type == 'radio' || type == 'switch'\">\n      <label class=\"form-check-inline mt-2\" v-for=\"option in selectOptions()\" _v-51cdbe40=\"\">\n        <input type=\"radio\" class=\"form-check-input\" :checked=\"option.value == value() || option == value()\" :name=\"attr('attr')\" :value=\"option.value || option\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" _v-51cdbe40=\"\"> {{ option.name || option }}\n      </label>\n    </template>\n\n    <template v-else-if=\"type == 'check-list'\">\n      <div class=\"list-group list-group-sm\" _v-51cdbe40=\"\">\n        <a class=\"list-group-item text-secondary d-flex justify-content-between\" :class=\"{'text-danger font-weight-bold': contain(option) }\" v-for=\"option in selectOptions()\" @click=\"check(option)\" _v-51cdbe40=\"\">\n          {{ option.name || option }}\n          <i class=\"fa fa-check text-danger mt-1\" v-if=\"contain(option)\" _v-51cdbe40=\"\"></i>\n        </a>\n      </div>\n    </template>\n\n    <template v-else-if=\"type == 'select'\">\n      <select :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value, 'select')\" :disabled=\"attr('disabled')\" _v-51cdbe40=\"\">\n        <option v-for=\"option in selectOptions()\" :value=\"option.value || option\" _v-51cdbe40=\"\">{{ option.name || option }}</option>\n        <option :value=\"null\" _v-51cdbe40=\"\">(无)</option>\n      </select>\n    </template>\n\n    <template v-else-if=\"type == 'checkbox' || type == 'boolean'\">\n      <label class=\"form-check-inline\" _v-51cdbe40=\"\">\n        <input type=\"checkbox\" class=\"form-check-input\" :checked=\"value()\" @input=\"assign($event.target.checked)\" :disabled=\"attr('disabled')\" _v-51cdbe40=\"\"> {{ attr('label') }}\n      </label>\n    </template>\n\n    <template v-else-if=\"type == 'textarea' || attr('rows')\">\n      <textarea :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :rows=\"attr('rows') || 3\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-51cdbe40=\"\"></textarea>\n    </template>\n\n    <template v-else-if=\"type == 'password'\">\n      <input type=\"password\" :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-51cdbe40=\"\">\n    </template>\n\n    <template v-else=\"\">\n      <input type=\"text\" :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-51cdbe40=\"\">\n    </template>\n\n    <small v-if=\"attr('hint')\" class=\"text-muted\" _v-51cdbe40=\"\">* {{ attr('hint') }}</small>\n  </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\" _v-6c87118a=\"\">\n  <label :class=\"col_left\" v-if=\"field.label !== null\" _v-6c87118a=\"\">\n    <span v-if=\"type != 'boolean' &amp;&amp; type != 'checkbox'\" _v-6c87118a=\"\">\n      {{ field.label }}&nbsp;<i class=\"text-danger\" v-if=\"attr('required')\" _v-6c87118a=\"\">*</i>\n    </span>\n  </label>\n\n  <div :class=\"col_right\" v-if=\"!attr('hidden')\" _v-6c87118a=\"\">\n\n    <!-- component injections -->\n\n    <template v-if=\"attr('slot')\">\n      <slot :name=\"attr('slot')\" v-bind=\"_slotData\" _v-6c87118a=\"\"></slot>\n    </template>\n\n    <template v-else-if=\"attr('component')\">\n      <keep-alive _v-6c87118a=\"\">\n        <component :is=\"attr('component')\" v-bind=\"_componentProps\" _v-6c87118a=\"\">\n      </component></keep-alive>\n    </template>\n\n    <!-- statics -->\n\n    <template v-else-if=\"type == '#link'\">\n      <a :class=\"resize('form-control-plaintext')\" :href=\"href()\" :target=\"attr('target')\" _v-6c87118a=\"\">\n        {{ value() }}\n      </a>\n    </template>\n    <template v-else-if=\"type[0] == '#' || type == 'static'\">\n      <input type=\"text\" :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" :disabled=\"true\" :placeholder=\"attr('placeholder')\" _v-6c87118a=\"\">\n    </template>\n\n    <!-- composed form inputs -->\n\n    <template v-else-if=\"type == 'image'\">\n      <div _v-6c87118a=\"\">\n        <el-upload v-if=\"attr('upload')\" :class=\"$resize(attr('upload.btn') || '', options)\" :name=\"attr('upload.name')\" :url=\"attr('upload.url')\" @done=\"attr('upload').done.call(data, arguments);$forceUpdate();\" @error=\"attr('upload').error.call(data, arguments)\" _v-6c87118a=\"\">\n          <img class=\"img-thumbnail mb-1\" :style=\"attr('style')\" v-if=\"value() || attr('default')\" :src=\"value() || attr('default')\" _v-6c87118a=\"\">\n          <span class=\"btn btn-outline-secondary\" v-else=\"\" _v-6c87118a=\"\"><i class=\"fa fa-plus\" _v-6c87118a=\"\"></i></span>\n        </el-upload>\n        <a class=\"btn btn-sm btn-outline-info corner-tl\" href=\"javascript:;\" @click=\"assign('')\" v-if=\"value()\" _v-6c87118a=\"\">\n          <i class=\"fa fa-lg fa-trash-alt\" _v-6c87118a=\"\"></i>\n        </a>\n      </div>\n    </template>\n\n    <template v-else-if=\"type == 'json'\">\n      <el-json-editor :value=\"value()\" @input=\"assign($event)\" _v-6c87118a=\"\"></el-json-editor>\n    </template>\n\n    <template v-else-if=\"type == 'date'\">\n      <el-date-time-picker :_class=\"resize('form-control')\" :name=\"attr('name')\" :format=\"attr('format')\" :value=\"value()\" :disabled=\"attr('disabled')\" :enabled-dates=\"attr('enabledDates')\" :min-date=\"attr('minDate')\" :max-date=\"attr('maxDate')\" @input=\"assign($event)\" _v-6c87118a=\"\"></el-date-time-picker>\n    </template>\n\n    <!-- prmitive html form controls -->\n\n    <template v-else-if=\"type == 'radio' || type == 'switch'\">\n      <label class=\"form-check-inline mt-2\" v-for=\"option in selectOptions()\" _v-6c87118a=\"\">\n        <input type=\"radio\" class=\"form-check-input\" :checked=\"option.value == value() || option == value()\" :name=\"attr('attr')\" :value=\"option.value || option\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" _v-6c87118a=\"\"> {{ option.name || option }}\n      </label>\n    </template>\n\n    <template v-else-if=\"type == 'check-list'\">\n      <div class=\"list-group list-group-sm\" _v-6c87118a=\"\">\n        <a class=\"list-group-item text-secondary d-flex justify-content-between\" :class=\"{'text-danger font-weight-bold': contain(option) }\" v-for=\"option in selectOptions()\" @click=\"check(option)\" _v-6c87118a=\"\">\n          {{ option.name || option }}\n          <i class=\"fa fa-check text-danger mt-1\" v-if=\"contain(option)\" _v-6c87118a=\"\"></i>\n        </a>\n      </div>\n    </template>\n\n    <template v-else-if=\"type == 'select'\">\n      <select :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value, 'select')\" :disabled=\"attr('disabled')\" _v-6c87118a=\"\">\n        <option v-for=\"option in selectOptions()\" :value=\"option.value || option\" _v-6c87118a=\"\">{{ option.name || option }}</option>\n        <option :value=\"null\" _v-6c87118a=\"\">(无)</option>\n      </select>\n    </template>\n\n    <template v-else-if=\"type == 'checkbox' || type == 'boolean'\">\n      <label class=\"form-check-inline\" _v-6c87118a=\"\">\n        <input type=\"checkbox\" class=\"form-check-input\" :checked=\"value()\" @input=\"assign($event.target.checked)\" :disabled=\"attr('disabled')\" _v-6c87118a=\"\"> {{ attr('label') }}\n      </label>\n    </template>\n\n    <template v-else-if=\"type == 'textarea' || attr('rows')\">\n      <textarea :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :rows=\"attr('rows') || 3\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-6c87118a=\"\"></textarea>\n    </template>\n\n    <template v-else-if=\"type == 'password'\">\n      <input type=\"password\" :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-6c87118a=\"\">\n    </template>\n\n    <template v-else=\"\">\n      <input type=\"text\" :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-6c87118a=\"\">\n    </template>\n\n    <small v-if=\"attr('hint')\" class=\"text-muted\" _v-6c87118a=\"\">* {{ attr('hint') }}</small>\n  </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
   module.hot.dispose(function () {
-    __vueify_insert__.cache["\n.corner-tl[_v-51cdbe40] {\n  position: absolute;\n  top: 1em;\n  left: 2em;\n}\n"] = false
+    __vueify_insert__.cache["\n.corner-tl[_v-6c87118a] {\n  position: absolute;\n  top: 1em;\n  left: 2em;\n}\n"] = false
     document.head.removeChild(__vueify_style__)
   })
   if (!module.hot.data) {
-    hotAPI.createRecord("_v-51cdbe40", module.exports)
+    hotAPI.createRecord("_v-6c87118a", module.exports)
   } else {
-    hotAPI.update("_v-51cdbe40", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+    hotAPI.update("_v-6c87118a", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":4,"vueify/lib/insert-css":8}],19:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":4,"vueify/lib/insert-css":8}],20:[function(require,module,exports){
 
 
 
@@ -10677,7 +10858,6 @@ if (module.hot) {(function () {  module.hot.accept()
 
 const ResourceMixin = require('../script/ResourceMixin.js')
 module.exports = {
-  template: '#DataFormTemplate',
   props: [
     'data', 'view', 'save', 'api',
   ],
@@ -10823,7 +11003,7 @@ module.exports = {
 }
 
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form class=\"form\" @submit.prevent=\"saveItem()\">\n  <slot name=\"header\"></slot>\n  <div class=\"mb-3\" v-if=\"view.button_position == 'header'\">\n    <button type=\"submit\" :class=\"$resize('btn btn-success', view)\">\n      <i class=\"fa fa-save\"></i> 保存\n    </button>\n    <slot name=\"buttons\"></slot>\n  </div>\n  <ul class=\"nav nav-tabs mb-3\" v-if=\"groups.length > 1\">\n    <li class=\"nav-item\" v-for=\"(group, index) in groups\" v-if=\"!isHidden(group)\">\n      <a class=\"nav-link\" :class=\"{ active: index == currentGroupIndex }\" :href=\"'#form_' + _uid + '_tab_' + index\" @click=\"tab(index)\">{{ group.label }}</a>\n    </li>\n  </ul>\n  <template v-for=\"(group, index) in groups\" v-if=\"index == currentGroupIndex &amp;&amp; !isHidden(group)\">\n    <div class=\"row\">\n      <div :class=\"field.width || view.field_width || 'col-12'\" v-for=\"field in group.fields\" v-if=\"!isHidden(field)\">\n        <div class=\"form-group\">\n          <el-field ref=\"fields\" :data=\"copy\" :field=\"field\" :options=\"view\">\n            <!-- pass through scoped slots -->\n            <template v-for=\"(_, scoped_slot_name) in $scopedSlots\" #[scoped_slot_name]=\"slotData\">\n              <slot :name=\"scoped_slot_name\" v-bind=\"slotData\"></slot>\n            </template>\n\n            <!-- pass through normal slots -->\n            <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n              <slot :name=\"slot_name\"></slot>\n            </template>\n          </el-field>\n        </div>\n      </div>\n    </div>\n  </template>\n  <slot name=\"form\"></slot>\n  <template v-if=\"!view.no_buttons &amp;&amp; (!view.button_position || view.button_position == 'footer')\">\n    <div class=\"form-group text-right\">\n      <button type=\"button\" :class=\"$resize('btn btn-outline-secondary', view)\" data-dismiss=\"modal\" @click=\"cancelEdit()\">取消</button>\n      <slot name=\"buttons\"></slot>\n      <button type=\"submit\" :class=\"$resize('btn btn-primary', view)\">保存</button>\n    </div>\n  </template>\n  <button type=\"submit\" hidden=\"\"></button>\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form class=\"form\" @submit.prevent=\"saveItem()\">\n  <slot name=\"header\"></slot>\n  <div class=\"mb-3\" v-if=\"view.button_position == 'header'\">\n    <button type=\"submit\" :class=\"$resize('btn btn-success', view)\">\n      <i class=\"fa fa-save\"></i> 保存\n    </button>\n    <slot name=\"buttons\"></slot>\n  </div>\n  <ul class=\"nav nav-tabs mb-3\" v-if=\"groups.length > 1\">\n    <li class=\"nav-item\" v-for=\"(group, index) in groups\" v-if=\"!isHidden(group)\">\n      <a class=\"nav-link\" :class=\"{ active: index == currentGroupIndex }\" :href=\"'#form_' + _uid + '_tab_' + index\" @click=\"tab(index)\">{{ group.label }}</a>\n    </li>\n  </ul>\n  <template v-for=\"(group, index) in groups\" v-if=\"index == currentGroupIndex &amp;&amp; !isHidden(group)\">\n    <div class=\"row\">\n      <div :class=\"field.width || view.field_width || 'col-12'\" v-for=\"field in group.fields\" v-if=\"!isHidden(field)\">\n        <div class=\"form-group\">\n          <el-form-field ref=\"fields\" :data=\"copy\" :field=\"field\" :options=\"view\">\n            <!-- pass through scoped slots -->\n            <template v-for=\"(_, scoped_slot_name) in $scopedSlots\" #[scoped_slot_name]=\"slotData\">\n              <slot :name=\"scoped_slot_name\" v-bind=\"slotData\"></slot>\n            </template>\n\n            <!-- pass through normal slots -->\n            <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n              <slot :name=\"slot_name\"></slot>\n            </template>\n          </el-form-field>\n        </div>\n      </div>\n    </div>\n  </template>\n  <slot name=\"form\"></slot>\n  <template v-if=\"!view.no_buttons &amp;&amp; (!view.button_position || view.button_position == 'footer')\">\n    <div class=\"form-group text-right\">\n      <button type=\"button\" :class=\"$resize('btn btn-outline-secondary', view)\" data-dismiss=\"modal\" @click=\"cancelEdit()\">取消</button>\n      <slot name=\"buttons\"></slot>\n      <button type=\"submit\" :class=\"$resize('btn btn-primary', view)\">保存</button>\n    </div>\n  </template>\n  <button type=\"submit\" hidden=\"\"></button>\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -10834,54 +11014,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-32433d64", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../script/ResourceMixin.js":29,"vue":6,"vue-hot-reload-api":4}],20:[function(require,module,exports){
-
-
-
-
-
-
-
-
-module.exports = {
-  template: '#DataSwitchTemplate',
-  props: [
-    'item', 'attr', 'reverse'
-  ],
-  data: function() {
-    var attr = this.item[this.attr];
-    return {
-      status: this.reverse ? (!attr) : attr
-    }
-  },
-  methods: {
-    icon: function() {
-      if (this.status) {
-        return 'fa fa-2x fa-toggle-on text-green';
-      } else {
-        return 'fa fa-2x fa-toggle-off text-muted';
-      }
-    },
-    switchStatus: function() {
-      this.status = !this.status;
-      this.item[this.attr] = !this.item[this.attr];
-    },
-  }
-}
-
-if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n  <i v-if=\"status\" :class=\"icon()\" @click=\"switchStatus()\"></i>\n  <i v-else=\"\" :class=\"icon()\" @click=\"switchStatus()\"></i>\n</div>\n"
-if (module.hot) {(function () {  module.hot.accept()
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), true)
-  if (!hotAPI.compatible) return
-  if (!module.hot.data) {
-    hotAPI.createRecord("_v-50d3c184", module.exports)
-  } else {
-    hotAPI.update("_v-50d3c184", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
-  }
-})()}
-},{"vue":6,"vue-hot-reload-api":4}],21:[function(require,module,exports){
+},{"../script/ResourceMixin.js":29,"vue":6,"vue-hot-reload-api":4}],21:[function(require,module,exports){
 "use strict";
 
 // table
@@ -10889,14 +11022,14 @@ Vue.component('el-table-cell', require('./table/table-cell.vue'));
 Vue.component('el-table-row', require('./table/table-row.vue'));
 Vue.component('el-table', require('./table/table.vue')); // form
 
-Vue.component('el-switch', require('./form/switch.vue'));
-Vue.component('el-field', require('./form/field.vue'));
+Vue.component('el-form-field', require('./form/form-field.vue'));
 Vue.component('el-form', require('./form/form.vue')); // composed
 
 Vue.component('el-toolbar', require('./composed/toolbar.vue'));
 Vue.component('el-workbench', require('./composed/workbench.vue'));
 Vue.component('el-search-modal', require('./composed/search-modal.vue'));
 Vue.component('el-search-form', require('./composed/search-form.vue'));
+Vue.component('el-binding', require('./composed/binding.vue'));
 Vue.component('el-set-editor', require('./composed/set-editor.vue'));
 Vue.component('el-mapping-editor', require('./composed/mapping-editor.vue')); // misc
 
@@ -11000,7 +11133,7 @@ Vue.prototype.$isNullOrUndefined = function (val) {
   return typeof val == 'undefined' || val === null;
 };
 
-},{"./composed/mapping-editor.vue":9,"./composed/search-form.vue":10,"./composed/search-modal.vue":11,"./composed/set-editor.vue":12,"./composed/toolbar.vue":13,"./composed/workbench.vue":14,"./external/date-time-picker.vue":15,"./external/json-editor.vue":16,"./external/upload.vue":17,"./form/field.vue":18,"./form/form.vue":19,"./form/switch.vue":20,"./misc/calendar.vue":22,"./misc/date-picker.vue":23,"./misc/filter.vue":24,"./misc/modal.vue":25,"./misc/pagination.vue":26,"./misc/tabs.vue":27,"./misc/time-select.vue":28,"./table/table-cell.vue":30,"./table/table-row.vue":31,"./table/table.vue":32,"object-path":1}],22:[function(require,module,exports){
+},{"./composed/binding.vue":9,"./composed/mapping-editor.vue":10,"./composed/search-form.vue":11,"./composed/search-modal.vue":12,"./composed/set-editor.vue":13,"./composed/toolbar.vue":14,"./composed/workbench.vue":15,"./external/date-time-picker.vue":16,"./external/json-editor.vue":17,"./external/upload.vue":18,"./form/form-field.vue":19,"./form/form.vue":20,"./misc/calendar.vue":22,"./misc/date-picker.vue":23,"./misc/filter.vue":24,"./misc/modal.vue":25,"./misc/pagination.vue":26,"./misc/tabs.vue":27,"./misc/time-select.vue":28,"./table/table-cell.vue":30,"./table/table-row.vue":31,"./table/table.vue":32,"object-path":1}],22:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.calendar-app .header-lite a[_v-c65cbac0] {\n  color: #666;\n  padding: 1em 1.5em;\n}\n\n.calendar-app .table[_v-c65cbac0] {\n  border-bottom: solid 1px #ccc;\n}\n\n.calendar-app .date-cell.default[_v-c65cbac0] {\n  padding: .33em;\n  display: table-cell;\n  width: 14%;\n  height: 8em;\n  vertical-align: top;\n  cursor: pointer;\n  border-left: solid 1px #ccc;\n  border-right: solid 1px #ccc;\n}\n\n.calendar-app .date-cell.default .date-tag[_v-c65cbac0] {\n  display: inline-block;\n  font-weight: bold;\n}\n\n.calendar-app .date-cell.default.disabled .date-tag[_v-c65cbac0] {\n  color: #ccc;\n}\n\n.calendar-app .date-cell.default.selected[_v-c65cbac0] {\n  background-color: #ffffcc;\n}\n\n.calendar-app .date-cell.today .date-tag[_v-c65cbac0] {\n  color: red;\n}\n\n.calendar-app .date-cell.lite[_v-c65cbac0] {\n  height: 4em;\n  text-align: center;\n  font-size: .9em;\n}\n\n.calendar-app .date-cell.lite .date-tag[_v-c65cbac0] {\n  display: inline-block;\n  text-align: center;\n  width: 2em;\n  height: 2em;\n  padding-top: .3em;\n  font-weight: 400;\n  border-radius: 50%;\n  color: #666;\n}\n\n.calendar-app .date-cell.lite.disabled .date-tag[_v-c65cbac0] {\n  color: #ccc;\n}\n\n.calendar-app .date-cell.lite.today .date-tag[_v-c65cbac0] {\n  background-color: #999;\n  color: #fff;\n}\n\n.calendar-app .date-cell.lite.selected .date-tag[_v-c65cbac0] {\n  background-color: red;\n  color: #fff;\n}\n")
 
@@ -11321,7 +11454,6 @@ if (module.hot) {(function () {  module.hot.accept()
 
 
 module.exports = {
-  template: '#ColumnFilter',
   props: [
     '_class', 'label', 'column', 'options', 'empty', 'highlight'
   ],
@@ -11552,7 +11684,6 @@ if (module.hot) {(function () {  module.hot.accept()
 
 
 module.exports = {
-  template: '#TabsTemplate',
   props: ['tabs'],
 }
 
@@ -12164,7 +12295,6 @@ if (module.hot) {(function () {  module.hot.accept()
 
 const ResourceMixin = require('../script/ResourceMixin.js')
 module.exports = {
-  template: '#DataTableTemplate',
   props: [
     'data', 'view', 'api', 'save'
   ],

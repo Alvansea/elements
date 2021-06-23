@@ -17,7 +17,6 @@
 
 <script>
   module.exports = {
-    template: '#ColumnFilter',
     props: [
       '_class', 'label', 'column', 'options', 'empty', 'highlight'
     ],

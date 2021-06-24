@@ -1,24 +1,22 @@
 <template>
-  <div class="d-inline-block">
-    <form ref="form" class="form-inline" @submit.prevent="search">
-      <div class="input-group" :class="_class">
-        <input type="text" class="form-control" name="filter"
-          v-model="filter" :placeholder="$attrs.placeholder || '查找'">
-        <input type="hidden" name="filtered" value="1">
-        <div class="input-group-append">
-          <a class="btn btn-outline-secondary" v-if="filter" @click="clear"><i class="fa fa-times"></i></a>
-          <button type="submit" class="btn btn-secondary">
-            <i class="fa fa-search"></i>
-          </button>
-        </div>
+  <form ref="form d-inline-block" class="form-inline" @submit.prevent="search">
+    <div class="input-group" :class="inputGroup">
+      <input type="text" class="form-control" name="filter"
+        v-model="filter" :placeholder="$attrs.placeholder || '查找'">
+      <input type="hidden" name="filtered" value="1">
+      <div class="input-group-append">
+        <a class="btn btn-outline-secondary" v-if="filter" @click="clear"><i class="fa fa-times"></i></a>
+        <button type="submit" class="btn btn-secondary">
+          <i class="fa fa-search"></i>
+        </button>
       </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </template>
 
 <script>
   module.exports = {
-    props: ['_class'],
+    props: ['inputGroup'],
     data: function() {
       return {
         filter: g_getQueryParams().filter || '',

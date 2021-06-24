@@ -69,7 +69,7 @@
 
       <template v-else-if="type == 'date'">
         <el-date-time-picker
-          :_class="resize('form-control')"
+          :form_control="resize('form-control')"
           :name="attr('name')"
           :format="attr('format')"
           :value="value()"

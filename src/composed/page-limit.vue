@@ -1,26 +1,24 @@
 <template>
-  <div class="d-inline-block">
-    <div class="btn-group" :class="_class">
-      <a :class="className(option)"
-        v-for="option in options"
-        @click="$filterBy('limit', option)">{{ option }}</a>
-    </div>
+  <div class="btn-group d-inline-block">
+    <a :class="cellClass(option)"
+      v-for="option in options"
+      @click="$filterBy('limit', option)">{{ option }}</a>
   </div>
 </template>
 
 <script>
   module.exports = {
     props: [
-      'options', '_class', 'pagination'
+      'options', 'pagination'
     ],
     computed: {
       _limit: function() {
-        var pagination = this.pagination || ViewModels.pagination || ViewModels.paginator || {}
+        var pagination = this.pagination || {}
         return this.$getQueryParams().limit || pagination.limit || 10
       }
     },
     methods: {
-      className: function(limit) {
+      cellClass: function(limit) {
         if (limit == this._limit) {
           return 'btn btn-secondary';
         } else {

@@ -13,11 +13,13 @@
         <span :class="$resize('btn btn-info mr-1', view)">
           <b class="d-none d-sm-inline-block">总数：</b><b>{{ _count }}</b>
         </span>
-        <el-page-limit :options="[10, 20, 100]" :pagination="pagination" :_class="$resize('btn-group mr-1', view)">
+        <el-page-limit :options="[10, 20, 100]" :pagination="pagination" :class="$resize('btn-group mr-1', view)">
         </el-page-limit>
       </template>
       <template v-if="view.search !== false">
-        <el-search-form :_class="$resize('input-group', view)" :placeholder="view.searchPlaceholder"></el-search-form>
+        <el-search-form :input_group="$resize('input-group', view)"
+          :placeholder="view.searchPlaceholder">
+        </el-search-form>
       </template>
     </div>
   </div>

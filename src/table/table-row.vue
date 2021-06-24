@@ -1,16 +1,6 @@
 <template>
   <tr>
-    <td v-for="(col, colIndex) in view.columns">
-      <template v-if="view.branches && colIndex == 0">
-        <span v-for="idx in indent">&nbsp;</span>
-        <a @click="showBranches = !showBranches;"
-          v-if="data[view.branches] ">
-          <i class="fa fa-minus" v-if="showBranches"></i>
-          <i class="fa fa-plus" v-else></i>
-        </a>
-        <i class="fa fa-minus text-muted" v-else></i>
-        &nbsp;
-      </template>
+    <td v-for="(col, colIndex) in view.columns" :class="$getAttr(col, 'class')" :style="$getAttr(col, 'style')">
       <el-table-cell
         :key="col.label + index"
         :col="col"
@@ -20,18 +10,16 @@
         @remove="$emit('remove', data, index)"
         @save="$emit('save', data, index)">
         <!-- pass through scoped slots -->
-        <template v-for="(_, scoped_slot_name) in $scopedSlots"
-          v-slot:[scoped_slot_name]="slotData">
-          <slot :name="scoped_slot_name" v-bind="slotData" />
+        <template v-for="(_, slot_name) in $scopedSlots" #[slot_name]="slotData">
+          <slot :name="slot_name" v-bind="slotData"></slot>
         </template>
-
         <!-- pass through normal slots -->
-        <template v-for="(_, slot_name) in $slots" v-slot:[slot_name]>
-          <slot :name="slot_name" />
+        <template v-for="(_, slot_name) in $slots" #[slot_name]>
+          <slot :name="slot_name"></slot>
         </template>
       </el-table-cell>
     </td>
-    <td v-if="!view.hideRowButtons">
+    <td v-if="!view.hide_row_buttons">
       <a class="btn-cell" role="button" @click="edit(data, index)" title="编辑">
         <i class="fa fa-edit"></i></a>
       <a class="btn-cell" role="button" @click="clone(data, index)" title="克隆">
@@ -46,30 +34,12 @@
 <script>
   module.exports = {
     props: [
-      'data', 'view', 'index', 'indent', 'visible',
+      'data', 'view', 'index', ,
     ],
     data: function() {
-      return {
-        showBranches: this.view.showBranches
-      };
+      return {}
     },
     methods: {
-      switchBranches: function() {
-        this.showBranches = !this.showBranches;
-        this.$forceUpdate();
-      },
-      getAttr: function(obj, col) {
-        if (col.type == 'date' && col.attr && col.format) {
-          var date = this.$getAttr(obj, col.attr);
-          return moment(date).format(col.format);
-        } else if (typeof (col.bind) == 'function') {
-          return col.bind.call(this, obj);
-        } else if (col.attr) {
-          return this.$getAttr(obj, col.attr);
-        } else {
-          return null;
-        }
-      },
       edit: function(data, index) {
         if (typeof (this.view.edit) == 'function') {
           this.view.edit.call(data, index)

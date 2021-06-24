@@ -3,7 +3,7 @@
     <input type="text"
       ref="picker"
       class="form-control"
-      :class="_class"
+      :class="formControl"
       :name="name"
       :value="date"
       :required="required"
@@ -19,7 +19,7 @@
 <script>
   module.exports = {
     props: [
-      'value', 'required', 'disabled', 'format', 'default', 'name', '_class', 'enabledDates', 'minDate', 'maxDate', 'config'
+      'value', 'required', 'disabled', 'format', 'default', 'name', 'formControl', 'enabledDates', 'minDate', 'maxDate', 'config'
     ],
     data: function() {
       return {

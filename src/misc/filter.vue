@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown d-inline">
-    <a type="button" data-toggle="dropdown" class="dropdown-toggle" :class="_class">
+    <a type="button" data-toggle="dropdown" class="dropdown-toggle" :class="btn">
       <b :class="highlight" v-if="_selected">{{ _selected }}</b>
       <b v-else>{{ label }}</b>
       <span class="caret"></span>
@@ -18,7 +18,7 @@
 <script>
   module.exports = {
     props: [
-      '_class', 'label', 'column', 'options', 'empty', 'highlight'
+      'btn', 'label', 'column', 'options', 'empty', 'highlight'
     ],
     computed: {
       _selected: function() {

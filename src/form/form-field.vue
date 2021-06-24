@@ -1,9 +1,11 @@
 <template>
   <div class="row">
-    <label :class="col_left" v-if="field.label !== null">
-      <span v-if="type != 'boolean' && type != 'checkbox'">
-        {{ field.label }}&nbsp;<i class="text-danger" v-if="attr('required')">*</i>
-      </span>
+    <label :class="col_left">
+      <template v-if="!options.hide_label && field.label !== null">
+        <template v-if="type != 'boolean' && type != 'checkbox'">
+          {{ field.label }}&nbsp;<i class="text-danger" v-if="attr('required')">*</i>
+        </template>
+      </template>
     </label>
 
     <div :class="col_right" v-if="!attr('hidden')">

@@ -48,7 +48,10 @@
           <tbody>
             <tr v-for="(item, itemIndex) in target">
               <td v-for="(column, colIndex) in view.target.columns">
-                <el-form-field :field="column" :data="item" :options="{size: 'sm'}"></el-form-field>
+                <el-form-field
+                  :field="column"
+                  :data="item"
+                  :options="{size: 'sm', hide_label: true }"></el-form-field>
               </td>
               <td v-if="view.target.sortable">
                 <a href="#" class="fa fa-chevron-up text-secondary"

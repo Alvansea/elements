@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form class="form-inline" @submit.prevent="queryItems()">
+    <form class="form-inline mb-3" @submit.prevent="queryItems()">
       <div class="input-group input-group-sm">
         <input type="text" class="form-control" v-model="searchFilter" :placeholder="view.source.placeholder">
         <div class="input-group-append">

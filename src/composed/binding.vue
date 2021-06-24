@@ -24,7 +24,7 @@
           <tbody>
             <tr v-for="(item, itemIndex) in searchResults">
               <td v-for="(column, colIndex) in view.source.columns">
-                <el-table-cell :el="item" :col="column" :index="colIndex">
+                <el-table-cell :data="item" :col="column" :index="colIndex">
                 </el-table-cell>
               </td>
               <td>

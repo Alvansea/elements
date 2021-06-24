@@ -12,7 +12,7 @@
       </div>
     </form>
     <div class="row">
-      <div class="pt-3" :class="sourceCol">
+      <div class="col" :class="sourceCol">
         <b class="text-secondary">搜索结果</b>
         <table class="table table-sm table-striped">
           <thead>
@@ -34,7 +34,7 @@
           </tbody>
         </table>
       </div>
-      <div class="pt-3" :class="targetCol">
+      <div class="col" :class="targetCol">
         <b class="text-secondary">数据管理</b>
         <table class="table table-sm table-striped">
           <thead>
@@ -93,10 +93,10 @@
       }
     },
     mounted: function() {
-      if (this.view.col) {
-        var parts = this.view.col.split('|')
-        this.sourceCol = 'col-' + parts[0]
-        this.targetCol = 'col-' + parts[1]
+      if (this.view.layout) {
+        var layout = this.view.col.split('|')
+        this.sourceCol = layout[0]
+        this.targetCol = layout[1]
       }
     },
     methods: {

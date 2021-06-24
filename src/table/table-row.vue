@@ -87,3 +87,20 @@
     }
   }
 </script>
+
+<style scoped>
+  .btn-cell {
+    display: inline-block;
+    margin-right: 0.5em;
+    font-size: 1em;
+    cursor: pointer;
+  }
+
+  .btn-cell:hover {
+    text-decoration: none;
+  }
+
+  .el-cell img {
+    width: 1.5em;
+  }
+</style>

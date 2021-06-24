@@ -12140,6 +12140,8 @@ if (module.hot) {(function () {  module.hot.accept()
   }
 })()}
 },{"vue":6,"vue-hot-reload-api":4,"vueify/lib/insert-css":8}],31:[function(require,module,exports){
+var __vueify_insert__ = require("vueify/lib/insert-css")
+var __vueify_style__ = __vueify_insert__.insert("\n.btn-cell[_v-715871b9] {\n  display: inline-block;\n  margin-right: 0.5em;\n  font-size: 1em;\n  cursor: pointer;\n}\n\n.btn-cell[_v-715871b9]:hover {\n  text-decoration: none;\n}\n\n.el-cell img[_v-715871b9] {\n  width: 1.5em;\n}\n")
 
 
 
@@ -12230,18 +12232,22 @@ module.exports = {
 }
 
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<tr>\n  <td v-for=\"(col, colIndex) in view.columns\">\n    <template v-if=\"view.branches &amp;&amp; colIndex == 0\">\n      <span v-for=\"idx in indent\">&nbsp;</span>\n      <a @click=\"showBranches = !showBranches;\" v-if=\"data[view.branches] \">\n        <i class=\"fa fa-minus\" v-if=\"showBranches\"></i>\n        <i class=\"fa fa-plus\" v-else=\"\"></i>\n      </a>\n      <i class=\"fa fa-minus text-muted\" v-else=\"\"></i>\n      &nbsp;\n    </template>\n    <el-table-cell :key=\"col.label + index\" :col=\"col\" :index=\"index\" :data=\"data\" @edit=\"$emit('edit', data, index)\" @remove=\"$emit('remove', data, index)\" @save=\"$emit('save', data, index)\">\n      <!-- pass through scoped slots -->\n      <template v-for=\"(_, scoped_slot_name) in $scopedSlots\" v-slot:[scoped_slot_name]=\"slotData\">\n        <slot :name=\"scoped_slot_name\" v-bind=\"slotData\">\n      </slot></template>\n\n      <!-- pass through normal slots -->\n      <template v-for=\"(_, slot_name) in $slots\" v-slot:[slot_name]=\"\">\n        <slot :name=\"slot_name\">\n      </slot></template>\n    </el-table-cell>\n  </td>\n  <td v-if=\"!view.hideRowButtons\">\n    <a class=\"btn-cell\" role=\"button\" @click=\"edit(data, index)\" title=\"编辑\">\n      <i class=\"fa fa-edit\"></i></a>\n    <a class=\"btn-cell\" role=\"button\" @click=\"clone(data, index)\" title=\"克隆\">\n      <i class=\"far fa-clone\"></i></a>\n    <slot name=\"actions\" v-bind=\"data\"></slot>\n    <a class=\"btn-cell\" role=\"button\" @click=\"$emit('remove', data, index)\" title=\"删除\">\n      <i class=\"fa fa-trash-alt\"></i></a>\n  </td>\n</tr>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<tr _v-715871b9=\"\">\n  <td v-for=\"(col, colIndex) in view.columns\" _v-715871b9=\"\">\n    <template v-if=\"view.branches &amp;&amp; colIndex == 0\">\n      <span v-for=\"idx in indent\" _v-715871b9=\"\">&nbsp;</span>\n      <a @click=\"showBranches = !showBranches;\" v-if=\"data[view.branches] \" _v-715871b9=\"\">\n        <i class=\"fa fa-minus\" v-if=\"showBranches\" _v-715871b9=\"\"></i>\n        <i class=\"fa fa-plus\" v-else=\"\" _v-715871b9=\"\"></i>\n      </a>\n      <i class=\"fa fa-minus text-muted\" v-else=\"\" _v-715871b9=\"\"></i>\n      &nbsp;\n    </template>\n    <el-table-cell :key=\"col.label + index\" :col=\"col\" :index=\"index\" :data=\"data\" @edit=\"$emit('edit', data, index)\" @remove=\"$emit('remove', data, index)\" @save=\"$emit('save', data, index)\" _v-715871b9=\"\">\n      <!-- pass through scoped slots -->\n      <template v-for=\"(_, scoped_slot_name) in $scopedSlots\" v-slot:[scoped_slot_name]=\"slotData\">\n        <slot :name=\"scoped_slot_name\" v-bind=\"slotData\" _v-715871b9=\"\">\n      </slot></template>\n\n      <!-- pass through normal slots -->\n      <template v-for=\"(_, slot_name) in $slots\" v-slot:[slot_name]=\"\">\n        <slot :name=\"slot_name\" _v-715871b9=\"\">\n      </slot></template>\n    </el-table-cell>\n  </td>\n  <td v-if=\"!view.hideRowButtons\" _v-715871b9=\"\">\n    <a class=\"btn-cell\" role=\"button\" @click=\"edit(data, index)\" title=\"编辑\" _v-715871b9=\"\">\n      <i class=\"fa fa-edit\" _v-715871b9=\"\"></i></a>\n    <a class=\"btn-cell\" role=\"button\" @click=\"clone(data, index)\" title=\"克隆\" _v-715871b9=\"\">\n      <i class=\"far fa-clone\" _v-715871b9=\"\"></i></a>\n    <slot name=\"actions\" v-bind=\"data\" _v-715871b9=\"\"></slot>\n    <a class=\"btn-cell\" role=\"button\" @click=\"$emit('remove', data, index)\" title=\"删除\" _v-715871b9=\"\">\n      <i class=\"fa fa-trash-alt\" _v-715871b9=\"\"></i></a>\n  </td>\n</tr>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
   if (!hotAPI.compatible) return
+  module.hot.dispose(function () {
+    __vueify_insert__.cache["\n.btn-cell[_v-715871b9] {\n  display: inline-block;\n  margin-right: 0.5em;\n  font-size: 1em;\n  cursor: pointer;\n}\n\n.btn-cell[_v-715871b9]:hover {\n  text-decoration: none;\n}\n\n.el-cell img[_v-715871b9] {\n  width: 1.5em;\n}\n"] = false
+    document.head.removeChild(__vueify_style__)
+  })
   if (!module.hot.data) {
     hotAPI.createRecord("_v-715871b9", module.exports)
   } else {
     hotAPI.update("_v-715871b9", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":6,"vue-hot-reload-api":4}],32:[function(require,module,exports){
+},{"vue":6,"vue-hot-reload-api":4,"vueify/lib/insert-css":8}],32:[function(require,module,exports){
 
 
 

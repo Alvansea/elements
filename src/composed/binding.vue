@@ -94,7 +94,7 @@
     },
     mounted: function() {
       if (this.view.layout) {
-        var layout = this.view.col.split('|')
+        var layout = this.view.layout.split('|')
         this.sourceCol = layout[0]
         this.targetCol = layout[1]
       }

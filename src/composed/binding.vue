@@ -2,7 +2,7 @@
   <div>
     <form class="form-inline" @submit.prevent="queryItems()">
       <div class="input-group input-group-sm">
-        <input type="text" class="form-control" v-model="searchFilter" :placeholder="searchLabel">
+        <input type="text" class="form-control" v-model="searchFilter" :placeholder="view.source.placeholder">
         <div class="input-group-append">
           <a class="btn btn-outline-secondary" v-if="searchFilter" @click="clearFilter()">
             <i class="fa fa-times"></i>

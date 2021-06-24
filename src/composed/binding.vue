@@ -24,7 +24,8 @@
           <tbody>
             <tr v-for="(item, itemIndex) in searchResults">
               <td v-for="(column, colIndex) in view.source.columns">
-                <data-table-cell :data="item" :col="column" :index="colIndex"></data-table-cell>
+                <el-table-cell :el="item" :col="column" :index="colIndex">
+                </el-table-cell>
               </td>
               <td>
                 <a href="javascript:;" class="fa fa-plus text-secondary" @click="addItem(item)">
@@ -47,7 +48,7 @@
           <tbody>
             <tr v-for="(item, itemIndex) in target">
               <td v-for="(column, colIndex) in view.target.columns">
-                <el-field :field="column" :data="item" :options="{size: 'sm'}"></el-field>
+                <el-form-field :field="column" :data="item" :options="{size: 'sm'}"></el-form-field>
               </td>
               <td v-if="view.target.sortable">
                 <a href="#" class="fa fa-chevron-up text-secondary"

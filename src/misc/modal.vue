@@ -1,6 +1,6 @@
 <template>
   <div ref="modal" class="modal">
-    <div :class="dialogClass">
+    <div :class="_dialogClass">
       <div class="modal-content">
         <div class="modal-header">
           <h6 class="modal-title">
@@ -18,6 +18,9 @@
         <div class="modal-body">
           <slot></slot>
         </div>
+        <div class="modal-footer" v-if="footer">
+          <slot name="footer"></slot>
+        </div>
       </div>
     </div>
   </div>
@@ -26,10 +29,10 @@
 <script>
   module.exports = {
     props: [
-      'title', 'hideClose', 'size'
+      'title', 'footer', 'hideClose', 'size'
     ],
     computed: {
-      dialogClass: function() {
+      _dialogClass: function() {
         return this.size ? 'modal-dialog modal-' + this.size : 'modal-dialog'
       }
     },

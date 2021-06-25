@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <label :class="col_left" v-if="!options.hide_label && field.label !== null">
-      <span v-if="type != 'boolean' && type != 'checkbox'">
+      <span v-if="_type != 'boolean' && _type != 'checkbox'">
         {{ field.label }}&nbsp;<i class="text-danger" v-if="attr('required')">*</i>
       </span>
     </label>
@@ -22,14 +22,14 @@
 
       <!-- statics -->
 
-      <template v-else-if="type == '#link'">
+      <template v-else-if="_type == '#link'">
         <a :class="resize('form-control-plaintext')"
           :href="href()"
           :target="attr('target')">
           {{ value() }}
         </a>
       </template>
-      <template v-else-if="type[0] == '#' || type == 'static'">
+      <template v-else-if="_type[0] == '#' || _type == 'static'">
         <input
           type="text"
           :class="resize('form-control')"
@@ -41,7 +41,7 @@
 
       <!-- composed form inputs -->
 
-      <template v-else-if="type == 'image'">
+      <template v-else-if="_type == 'image'">
         <div>
           <el-upload
             v-if="attr('upload')"
@@ -61,13 +61,13 @@
         </div>
       </template>
 
-      <template v-else-if="type == 'json'">
+      <template v-else-if="_type == 'json'">
         <el-json-editor
           :value="value()"
           @input="assign($event)"></el-json-editor>
       </template>
 
-      <template v-else-if="type == 'date'">
+      <template v-else-if="_type == 'date'">
         <el-date-time-picker
           :form_control="resize('form-control')"
           :name="attr('name')"
@@ -82,7 +82,7 @@
 
       <!-- prmitive html form controls -->
 
-      <template v-else-if="type == 'radio' || type == 'switch'">
+      <template v-else-if="_type == 'radio' || _type == 'switch'">
         <label class="form-check-inline mt-2" v-for="option in selectOptions()">
           <input
             type="radio"
@@ -95,7 +95,7 @@
         </label>
       </template>
 
-      <template v-else-if="type == 'check-list'">
+      <template v-else-if="_type == 'check-list'">
         <div class="list-group list-group-sm">
           <a class="list-group-item text-secondary d-flex justify-content-between"
             :class="{'text-danger font-weight-bold': contain(option) }" v-for="option in selectOptions()"
@@ -106,7 +106,7 @@
         </div>
       </template>
 
-      <template v-else-if="type == 'select'">
+      <template v-else-if="_type == 'select'">
         <select
           :class="resize('form-control')"
           :name="attr('name')"
@@ -120,7 +120,7 @@
         </select>
       </template>
 
-      <template v-else-if="type == 'checkbox' || type == 'boolean'">
+      <template v-else-if="_type == 'checkbox' || _type == 'boolean'">
         <label class="form-check-inline">
           <input
             type="checkbox"
@@ -131,7 +131,7 @@
         </label>
       </template>
 
-      <template v-else-if="type == 'textarea' || attr('rows')">
+      <template v-else-if="_type == 'textarea' || attr('rows')">
         <textarea
           :class="resize('form-control')"
           :name="attr('name')"
@@ -142,7 +142,7 @@
           :placeholder="attr('placeholder')"></textarea>
       </template>
 
-      <template v-else-if="type == 'password'">
+      <template v-else-if="_type == 'password'">
         <input
           type="password"
           :class="resize('form-control')"
@@ -186,7 +186,7 @@
       };
     },
     computed: {
-      type: function() {
+      _type: function() {
         return this.attr('type') || ''
       },
       _slotData: function() {
@@ -200,7 +200,7 @@
     },
     created: function() {
       var self = this
-      if (this.type == 'switch') {
+      if (this._type == 'switch') {
         this.field.options = [
           { name: '是', value: true },
           { name: '否', value: false },
@@ -209,8 +209,8 @@
       this.assign(this.value() || this.attr('default'))
     },
     methods: {
-      attr: function(type) {
-        return this.$getAttr(this.field, type, {
+      attr: function(name) {
+        return this.$getAttr(this.field, name, {
           data: this.data,
           field: this.field,
           index: this.index
@@ -241,7 +241,7 @@
         return this.$format(this.attr('href'), this.data)
       },
       selectOptions: function() {
-        if (this.type == 'switch') {
+        if (this._type == 'switch') {
           return [
             { name: '是', value: true },
             { name: '否', value: false },

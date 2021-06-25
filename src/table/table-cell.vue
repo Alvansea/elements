@@ -26,7 +26,7 @@
 
     <template v-else-if="col.type == 'toggle' || col.type == 'switch'">
       <span ref="toggle" role="button" @click="toggle(data, col)">
-        <i :class="toggleIcon"></i>
+        <i :class="_toggleIcon"></i>
       </span>
     </template>
 
@@ -97,7 +97,7 @@
       }
     },
     computed: {
-      toggleIcon: function() {
+      _toggleIcon: function() {
         if (!!this.attr() == !!this.col.reverse) {
           return 'fa fa-toggle-off fa-lg text-muted'
         } else {

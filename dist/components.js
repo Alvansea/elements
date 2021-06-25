@@ -11311,7 +11311,7 @@ module.exports = {
       this.focus = tag
       location.hash = '#' + this.focus
       this.refresh()
-      this.$emit('select', this.eventGroups[tag] || [])
+      this.$emit('select', tag, this.eventGroups[tag] || [])
     },
     addMonth: function(num) {
       this.start.setMonth(this.start.getMonth() + num)

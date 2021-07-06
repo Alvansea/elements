@@ -22,10 +22,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, itemIndex) in searchResults">
+            <tr v-for="(item, itemIndex) in searchResults" v-if="!matchTarget(item)">
               <td v-for="(column, colIndex) in view.source.columns">
-                <el-table-cell :data="item" :col="column" :index="colIndex">
-                </el-table-cell>
+                <el-static-field :data="item" :field="column" :index="colIndex">
+                </el-static-field>
               </td>
               <td>
                 <a href="javascript:;" class="fa fa-plus text-secondary" @click="addItem(item)">
@@ -54,15 +54,15 @@
                   :options="{size: 'sm', hide_label: true }"></el-form-field>
               </td>
               <td v-if="view.target.sortable">
-                <a href="#" class="fa fa-chevron-up text-secondary"
+                <a role="button" class="fa fa-chevron-up text-secondary"
                   @click="moveItem(itemIndex, -1)">
                 </a>
-                <a href="#" class="fa fa-chevron-down text-secondary"
+                <a role="button" class="fa fa-chevron-down text-secondary"
                   @click="moveItem(itemIndex, 1)">
                 </a>
               </td>
               <td>
-                <a href="#" class="fa fa-trash-alt text-secondary" @click="removeItem(itemIndex)">
+                <a role="button" class="fa fa-trash-alt text-secondary" @click="removeItem(itemIndex)">
                 </a>
               </td>
             </tr>
@@ -134,13 +134,16 @@
         this.searchFilter = ''
         this.searchResults = []
       },
-      getIndex: function(item) {
+      matchTarget: function(item) {
+        if (!this.view.match && typeof (this.view.match) != 'function') {
+          return false
+        }
         for (var i in this.target) {
-          if (this.target[i]._id == item._id) {
-            return i;
+          if (this.view.match(item, this.target[i])) {
+            return true
           }
         }
-        return -1;
+        return false
       },
       transform: function(item) {
         if (typeof (this.view.transform) == 'function') {

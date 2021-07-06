@@ -1,17 +1,17 @@
 <template>
-  <div class="row">
-    <label :class="col_left" v-if="!options.hide_label && field.label !== null">
-      <span v-if="_type != 'boolean' && _type != 'checkbox'">
+  <div class="row" v-if="!attr('hidden')">
+    <label :class="col_left" v-if="!_options.hide_label && field.label !== null">
+      <span v-if="options.static || attr('static') || (_type != 'boolean' && _type != 'checkbox')">
         {{ field.label }}&nbsp;<i class="text-danger" v-if="attr('required')">*</i>
       </span>
     </label>
 
-    <div :class="col_right" v-if="!attr('hidden')">
+    <div :class="col_right">
 
       <!-- component injections -->
 
       <template v-if="attr('slot')">
-        <slot :name="attr('slot')" v-bind="_slotData"></slot>
+        <slot :name="attr('slot')" v-bind="data"></slot>
       </template>
 
       <template v-else-if="attr('component')">
@@ -22,21 +22,10 @@
 
       <!-- statics -->
 
-      <template v-else-if="_type == '#link'">
-        <a :class="resize('form-control-plaintext')"
-          :href="href()"
-          :target="attr('target')">
-          {{ value() }}
-        </a>
-      </template>
-      <template v-else-if="_type[0] == '#' || _type == 'static'">
-        <input
-          type="text"
-          :class="resize('form-control')"
-          :name="attr('name')"
-          :value="value()"
-          :disabled="true"
-          :placeholder="attr('placeholder')" />
+      <template v-else-if="options.static || attr('static')">
+        <span :class="resize('form-control form-control-plaintext')">
+          <el-static-field :data="data" :field="field" :options="options"></el-static-field>
+        </span>
       </template>
 
       <!-- composed form inputs -->
@@ -45,7 +34,7 @@
         <div>
           <el-upload
             v-if="attr('upload')"
-            :class="$resize(attr('upload.btn') || '', options)"
+            :class="resize(attr('upload.btn'))"
             :name="attr('upload.name')"
             :url="attr('upload.url')"
             @done="attr('upload').done.call(data, arguments);$forceUpdate();"
@@ -53,9 +42,13 @@
             <img class="img-thumbnail mb-1" :style="attr('style')"
               v-if="value() || attr('default')"
               :src="value() || attr('default')">
-            <span class="btn btn-outline-secondary" v-else><i class="fa fa-plus"></i></span>
+            <span class="btn btn-outline-secondary" v-else>
+              <i class="fa fa-plus"></i></span>
           </el-upload>
-          <a class="btn btn-sm btn-outline-info corner-tl" href="javascript:;" @click="assign('')" v-if="value()">
+          <a class="btn btn-sm btn-outline-info corner-tl"
+            href="javascript:;"
+            @click="assign('')"
+            v-if="value()">
             <i class="fa fa-lg fa-trash-alt"></i>
           </a>
         </div>
@@ -69,10 +62,10 @@
 
       <template v-else-if="_type == 'date'">
         <el-date-time-picker
-          :form_control="resize('form-control')"
           :name="attr('name')"
           :format="attr('format')"
           :value="value()"
+          :input-class="resize('form-control')"
           :disabled="attr('disabled')"
           :enabled-dates="attr('enabledDates')"
           :min-date="attr('minDate')"
@@ -82,7 +75,7 @@
 
       <!-- prmitive html form controls -->
 
-      <template v-else-if="_type == 'radio' || _type == 'switch'">
+      <template v-else-if="_type == 'radio'">
         <label class="form-check-inline mt-2" v-for="option in selectOptions()">
           <input
             type="radio"
@@ -113,11 +106,15 @@
           :value="value()"
           @input="assign($event.target.value, 'select')"
           :disabled="attr('disabled')">
+          <option :value="null">(无)</option>
           <option
             v-for="option in selectOptions()"
             :value="option.value || option">{{ option.name || option }}</option>
-          <option :value="null">(无)</option>
         </select>
+      </template>
+
+      <template v-else-if="_type == 'switch' || _type == 'toggle'">
+        <el-toggle class="fa-2x" :value="value()" :reverse="attr('reverse')" @input="assign"></el-toggle>
       </template>
 
       <template v-else-if="_type == 'checkbox' || _type == 'boolean'">
@@ -186,6 +183,9 @@
       };
     },
     computed: {
+      _options: function() {
+        return this.options || {}
+      },
       _type: function() {
         return this.attr('type') || ''
       },
@@ -198,15 +198,13 @@
         return props
       },
     },
-    created: function() {
-      var self = this
-      if (this._type == 'switch') {
-        this.field.options = [
-          { name: '是', value: true },
-          { name: '否', value: false },
-        ]
+    mounted: function() {
+      if (this._type == 'toggle'
+        || this._type == 'boolean'
+        || this._type == 'switch'
+        || this._type == 'checkbox') {
+        this.assign(!!this.value())
       }
-      this.assign(this.value() || this.attr('default'))
     },
     methods: {
       attr: function(name) {
@@ -241,12 +239,6 @@
         return this.$format(this.attr('href'), this.data)
       },
       selectOptions: function() {
-        if (this._type == 'switch') {
-          return [
-            { name: '是', value: true },
-            { name: '否', value: false },
-          ]
-        }
         var options = this.attr('options')
         if (!options) {
           return []

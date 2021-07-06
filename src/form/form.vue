@@ -55,7 +55,7 @@
   const ResourceMixin = require('../script/ResourceMixin.js')
   module.exports = {
     props: [
-      'data', 'view', 'save', 'api',
+      'data', 'index', 'view', 'save', 'api',
     ],
     mixins: [ResourceMixin],
     data: function() {
@@ -180,8 +180,6 @@
           return this.$emit('error', errors)
         }
         this.$save(this.copy, this.index, function(err, result) {
-          console.log('err', err)
-          console.log('result', result)
           if (err) {
             self.$emit('error', err)
             g_alert(err.errMsg || err.toString())

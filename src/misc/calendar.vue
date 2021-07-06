@@ -21,7 +21,7 @@
       </thead>
       <tbody>
         <tr v-for="week in weeks">
-          <td v-for="cell in week" class="date-cell" :class="cellClass(cell)" @click="selectDate(cell.tag)">
+          <td v-for="cell in week" class="date-cell" :class="cellClass(cell)" @click="clickDate(cell.tag)">
             <a class="date-tag" :href="'#' + cell.tag">
               {{ cell.date.getDate() }}
             </a>
@@ -66,7 +66,7 @@
         this.renderEvents()
       }
     },
-    created: function() {
+    mounted: function() {
       this.render()
       this.renderEvents()
     },
@@ -149,10 +149,7 @@
 
         this.selectDate(this.focus)
       },
-      getDateTag: function(date, type) {
-        if (date.constructor == String) {
-          console.log('tag', type, date)
-        }
+      getDateTag: function(date) {
         return moment(date).format('YYYY-MM-DD');
       },
       cellClass: function(cell) {
@@ -174,6 +171,10 @@
         location.hash = '#' + this.focus
         this.refresh()
         this.$emit('select', tag, this.eventGroups[tag] || [])
+      },
+      clickDate: function(tag) {
+        this.selectDate(tag)
+        this.$emit('click', tag, this.eventGroups[tag] || [])
       },
       addMonth: function(num) {
         this.start.setMonth(this.start.getMonth() + num)

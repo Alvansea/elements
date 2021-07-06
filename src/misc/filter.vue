@@ -6,8 +6,8 @@
       <span class="caret"></span>
     </a>
     <div class="dropdown-menu">
-      <a class="dropdown-item" href="#" @click="$filterBy(column, '')" v-if="empty">{{ empty }}</a>
-      <a class="dropdown-item" href="#" v-for="option in options"
+      <a class="dropdown-item" role="button" @click="$filterBy(column, '')" v-if="empty">{{ empty }}</a>
+      <a class="dropdown-item" role="button" v-for="option in options"
         @click="$filterBy(column, option.value || option, !empty)">
         {{ option.name || option }}
       </a>

@@ -1,14 +1,12 @@
 <template>
   <tr>
     <td v-for="(col, colIndex) in view.columns" :class="$getAttr(col, 'class')" :style="$getAttr(col, 'style')">
-      <el-table-cell
+      <el-static-field
         :key="col.label + index"
-        :col="col"
+        :field="col"
         :index="index"
         :data="data"
-        @edit="$emit('edit', data, index)"
-        @remove="$emit('remove', data, index)"
-        @save="$emit('save', data, index)">
+        @change="$emit('save', data, index)">
         <!-- pass through scoped slots -->
         <template v-for="(_, slot_name) in $scopedSlots" #[slot_name]="slotData">
           <slot :name="slot_name" v-bind="slotData"></slot>
@@ -17,7 +15,7 @@
         <template v-for="(_, slot_name) in $slots" #[slot_name]>
           <slot :name="slot_name"></slot>
         </template>
-      </el-table-cell>
+      </el-static-field>
     </td>
     <td v-if="!view.hide_row_buttons">
       <a class="btn-cell" role="button" @click="edit(data, index)" title="编辑">

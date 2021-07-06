@@ -3,7 +3,7 @@
     <input type="text"
       ref="picker"
       class="form-control"
-      :class="formControl"
+      :class="inputClass"
       :name="name"
       :value="date"
       :required="required"
@@ -19,14 +19,18 @@
 <script>
   module.exports = {
     props: [
-      'value', 'required', 'disabled', 'format', 'default', 'name', 'formControl', 'enabledDates', 'minDate', 'maxDate', 'config'
+      'value', 'required', 'disabled', 'format', 'default', 'name', 'inputClass', 'enabledDates', 'minDate', 'maxDate', 'config'
     ],
     data: function() {
       return {
         picker: null,
         elem: null,
-        localFormat: this.format || 'YYYY-MM-DD HH:mm',
         date: null
+      }
+    },
+    computed: {
+      _format: function() {
+        return this.format || 'YYYY-MM-DD HH:mm'
       }
     },
     watch: {
@@ -46,7 +50,7 @@
         var minDate = this.minDate ? moment(this.minDate).format('YYYY-MM-DD') : null
         var maxDate = this.maxDate ? moment(this.maxDate).format('YYYY-MM-DD') : null
         var options = {
-          format: this.localFormat,
+          format: this._format,
           dayViewHeaderFormat: 'YYYY MMMM',
           locale: 'zh-cn',
           ignoreReadonly: true,
@@ -71,7 +75,7 @@
       parseValue: function(val) {
         var date = val || this.default;
         if (date) {
-          return moment(val || this.default || null).format(this.localFormat)
+          return moment(val || this.default || null).format(this._format)
         } else {
           return '';
         }

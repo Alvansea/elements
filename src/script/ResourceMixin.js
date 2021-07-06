@@ -10,7 +10,7 @@ module.exports = {
             cb && cb(res.body.errMsg, res.body);
           })
           .catch(function(res) {
-            console.log('err', res)
+            console.log('* ResourceMixin.$save', res)
             cb && cb(res.body || res)
           })
       } else {

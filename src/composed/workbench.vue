@@ -38,11 +38,20 @@
       <el-form
         v-if="view.form"
         :data="current"
+        :index="index"
         :view="view.form"
         :api="api"
         :save="save"
         @save="onSave"
         @cancel="cancelEdit">
+        <!-- pass through scoped slots -->
+        <template v-for="(_, slot_name) in $scopedSlots" #[slot_name]="slotData">
+          <slot :name="slot_name" v-bind="slotData"></slot>
+        </template>
+        <!-- pass through normal slots -->
+        <template v-for="(_, slot_name) in $slots" #[slot_name]>
+          <slot :name="slot_name"></slot>
+        </template>
       </el-form>
     </el-modal>
   </div>
@@ -89,7 +98,7 @@
         }
       },
       editItem: function(item, index) {
-        this.$emit('edit', item, index);
+        this.$emit('edit', item, index)
         if (this.view.form) {
           this.current = item;
           this.index = index;

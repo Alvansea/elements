@@ -1,34 +1,33 @@
-// table
-Vue.component('el-table-cell', require('./table/table-cell.vue'))
-Vue.component('el-table-row', require('./table/table-row.vue'))
-Vue.component('el-table', require('./table/table.vue'))
-
 // form
-Vue.component('el-form-field', require('./form/form-field.vue'))
 Vue.component('el-form', require('./form/form.vue'))
+Vue.component('el-form-field', require('./form/form-field.vue'))
+Vue.component('el-static-field', require('./form/static-field.vue'))
+Vue.component('el-toggle', require('./form/toggle.vue'))
+Vue.component('el-date-time-picker', require('./form/date-time-picker.vue'))
+Vue.component('el-upload', require('./form/upload.vue'))
+Vue.component('el-json-editor', require('./form/json-editor.vue'))
+
+// table
+Vue.component('el-table', require('./table/table.vue'))
+Vue.component('el-table-row', require('./table/table-row.vue'))
 
 // composed
-Vue.component('el-toolbar', require('./composed/toolbar.vue'))
 Vue.component('el-workbench', require('./composed/workbench.vue'))
+Vue.component('el-toolbar', require('./composed/toolbar.vue'))
 Vue.component('el-search-modal', require('./composed/search-modal.vue'))
 Vue.component('el-search-form', require('./composed/search-form.vue'))
 Vue.component('el-binding', require('./composed/binding.vue'))
-Vue.component('el-set-editor', require('./composed/set-editor.vue'))
-Vue.component('el-mapping-editor', require('./composed/mapping-editor.vue'))
 
 // misc
+Vue.component('el-modal', require('./misc/modal.vue'))
 Vue.component('el-calendar', require('./misc/calendar.vue'))
 Vue.component('el-filter', require('./misc/filter.vue'))
 Vue.component('el-tabs', require('./misc/tabs.vue'))
 Vue.component('el-pagination', require('./misc/pagination.vue'))
-Vue.component('el-modal', require('./misc/modal.vue'))
-Vue.component('el-date-picker', require('./misc/date-picker.vue'))
-Vue.component('el-time-select', require('./misc/time-select.vue'))
 
-// external
-Vue.component('el-date-time-picker', require('./external/date-time-picker.vue'))
-Vue.component('el-upload', require('./external/upload.vue'))
-Vue.component('el-json-editor', require('./external/json-editor.vue'))
+Vue.config.errorHandler = function(err, vm, info) {
+  console.log(`Error: ${err.toString()}\nInfo: ${info}`);
+}
 
 const objectPath = require('object-path')
 Vue.prototype.$getAttr = function(obj, attr, context) {
@@ -42,13 +41,19 @@ Vue.prototype.$getAttr = function(obj, attr, context) {
   }
 }
 Vue.prototype.$setAttr = function(obj, attr, val) {
-  return objectPath.set(obj, attr, val)
+  try {
+    var result = objectPath.set(obj, attr, val)
+    return result
+  } catch (err) {
+    console.log('* $setAttr', err)
+    return null
+  }
 }
 
 Vue.prototype.$format = function(template, obj) {
   var text = template + ''
   var match
-  while (match = text.match(/{(\w+)}/)) {
+  while (match = text.match(/{([\w\.]+)}/)) {
     text = text.replace(match[0], this.$getAttr(obj, match[1]))
   }
   return text

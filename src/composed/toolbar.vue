@@ -17,7 +17,7 @@
         </el-page-limit>
       </template>
       <template v-if="view.search !== false">
-        <el-search-form :input_group="$resize('input-group', view)"
+        <el-search-form :input-group="$resize('input-group', view)"
           :placeholder="view.searchPlaceholder">
         </el-search-form>
       </template>

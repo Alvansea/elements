@@ -179,6 +179,9 @@
           g_alert(errors)
           return this.$emit('error', errors)
         }
+        if (!this.api && !this.save) {
+          return this.$emit('submit', this.copy)
+        }
         this.$save(this.copy, this.index, function(err, result) {
           if (err) {
             self.$emit('error', err)

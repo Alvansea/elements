@@ -67,3 +67,7 @@ td .btn.btn-sm {
 .list-group-sm .list-group-item {
   padding: .5em 1em;
 }
+
+.text-bold {
+  font-weight: bold;
+}

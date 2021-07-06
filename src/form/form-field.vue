@@ -1,7 +1,8 @@
 <template>
   <div class="row" v-if="!attr('hidden')">
-    <label :class="col_left" v-if="!_options.hide_label && field.label !== null">
-      <span v-if="options.static || attr('static') || (_type != 'boolean' && _type != 'checkbox')">
+    <label :class="col_left" v-if="!_noLabel">
+      <span v-if="options.static || attr('static') || (_type != 'boolean' && _type != 'checkbox')"
+        :class="attr('label_class')">
         {{ field.label }}&nbsp;<i class="text-danger" v-if="attr('required')">*</i>
       </span>
     </label>
@@ -183,6 +184,9 @@
       };
     },
     computed: {
+      _noLabel: function() {
+        return this._options.hide_label || this.field.label === null
+      },
       _options: function() {
         return this.options || {}
       },
@@ -204,6 +208,10 @@
         || this._type == 'switch'
         || this._type == 'checkbox') {
         this.assign(!!this.value())
+      }
+      if (this._type == 'label') {
+        this.col_left = 'col-12'
+        this.col_right = 'd-none'
       }
     },
     methods: {

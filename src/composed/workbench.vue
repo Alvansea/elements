@@ -37,6 +37,7 @@
     <el-modal ref="editModal" title="编辑" class="fade" size="lg">
       <el-form
         v-if="view.form"
+        ref="form"
         :data="current"
         :index="index"
         :view="view.form"
@@ -102,6 +103,7 @@
         if (this.view.form) {
           this.current = item;
           this.index = index;
+          this.$refs.form.initCopy(this.current)
           this.$refs.editModal.modal();
         }
       },

@@ -9781,6 +9781,7 @@ if (module.hot) {(function () {  module.hot.accept()
 
 
 
+
 const ResourceMixin = require('../script/ResourceMixin.js')
 module.exports = {
   props: [
@@ -9825,6 +9826,7 @@ module.exports = {
       if (this.view.form) {
         this.current = item;
         this.index = index;
+        this.$refs.form.initCopy(this.current)
         this.$refs.editModal.modal();
       }
     },
@@ -9866,7 +9868,7 @@ module.exports = {
 }
 
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n  <el-toolbar :view=\"view.toolbar\" :pagination=\"view.table &amp;&amp; view.table.pagination\" v-if=\"view.toolbar\">\n    <a :class=\"$resize('btn btn-outline-primary mr-1', view.toolbar)\" v-if=\"!view.toolbar.hideAddButton\" @click=\"addItem()\">\n      <i class=\"fa fa-plus\"></i> 添加</a>\n    <slot name=\"toolbar\"></slot>\n  </el-toolbar>\n\n  <div class=\"table-responsive\" v-if=\"view.table\">\n    <el-table v-if=\"view.table\" :data=\"items\" :view=\"view.table\" :api=\"api\" :save=\"save\" @edit=\"editItem\" @clone=\"cloneItem\" @save=\"onSave\" @remove=\"onRemove\">\n      <!-- pass through scoped slots -->\n      <template v-for=\"(_, slot_name) in $scopedSlots\" #[slot_name]=\"slotData\">\n        <slot :name=\"slot_name\" v-bind=\"slotData\"></slot>\n      </template>\n      <!-- pass through normal slots -->\n      <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n        <slot :name=\"slot_name\"></slot>\n      </template>\n    </el-table>\n  </div>\n\n  <el-pagination :pagination=\"view.table &amp;&amp; view.table.pagination\"></el-pagination>\n\n  <el-modal ref=\"editModal\" title=\"编辑\" class=\"fade\" size=\"lg\">\n    <el-form v-if=\"view.form\" :data=\"current\" :index=\"index\" :view=\"view.form\" :api=\"api\" :save=\"save\" @save=\"onSave\" @cancel=\"cancelEdit\">\n      <!-- pass through scoped slots -->\n      <template v-for=\"(_, slot_name) in $scopedSlots\" #[slot_name]=\"slotData\">\n        <slot :name=\"slot_name\" v-bind=\"slotData\"></slot>\n      </template>\n      <!-- pass through normal slots -->\n      <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n        <slot :name=\"slot_name\"></slot>\n      </template>\n    </el-form>\n  </el-modal>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n  <el-toolbar :view=\"view.toolbar\" :pagination=\"view.table &amp;&amp; view.table.pagination\" v-if=\"view.toolbar\">\n    <a :class=\"$resize('btn btn-outline-primary mr-1', view.toolbar)\" v-if=\"!view.toolbar.hideAddButton\" @click=\"addItem()\">\n      <i class=\"fa fa-plus\"></i> 添加</a>\n    <slot name=\"toolbar\"></slot>\n  </el-toolbar>\n\n  <div class=\"table-responsive\" v-if=\"view.table\">\n    <el-table v-if=\"view.table\" :data=\"items\" :view=\"view.table\" :api=\"api\" :save=\"save\" @edit=\"editItem\" @clone=\"cloneItem\" @save=\"onSave\" @remove=\"onRemove\">\n      <!-- pass through scoped slots -->\n      <template v-for=\"(_, slot_name) in $scopedSlots\" #[slot_name]=\"slotData\">\n        <slot :name=\"slot_name\" v-bind=\"slotData\"></slot>\n      </template>\n      <!-- pass through normal slots -->\n      <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n        <slot :name=\"slot_name\"></slot>\n      </template>\n    </el-table>\n  </div>\n\n  <el-pagination :pagination=\"view.table &amp;&amp; view.table.pagination\"></el-pagination>\n\n  <el-modal ref=\"editModal\" title=\"编辑\" class=\"fade\" size=\"lg\">\n    <el-form v-if=\"view.form\" ref=\"form\" :data=\"current\" :index=\"index\" :view=\"view.form\" :api=\"api\" :save=\"save\" @save=\"onSave\" @cancel=\"cancelEdit\">\n      <!-- pass through scoped slots -->\n      <template v-for=\"(_, slot_name) in $scopedSlots\" #[slot_name]=\"slotData\">\n        <slot :name=\"slot_name\" v-bind=\"slotData\"></slot>\n      </template>\n      <!-- pass through normal slots -->\n      <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n        <slot :name=\"slot_name\"></slot>\n      </template>\n    </el-form>\n  </el-modal>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -10163,14 +10165,9 @@ module.exports = {
     'field', 'data', 'options', 'caller'
   ],
   data: function() {
-    var options = this.options || {}
-    var layout = this.field.layout || options.field_layout
-    var cols = layout ? layout.split('|') : []
-    var col_left = (cols[0] || 'col-12') + ' col-form-label'
-    var col_right = cols[1] || 'col-12'
     return {
-      col_left: col_left,
-      col_right: col_right,
+      col_left: 'col-12',
+      col_right: 'col-12',
     };
   },
   computed: {
@@ -10202,6 +10199,15 @@ module.exports = {
     if (this._type == 'label') {
       this.col_left = 'col-12'
       this.col_right = 'd-none'
+    } else if (this._noLabel) {
+      this.col_left = 'd-none'
+      this.col_right = 'col-12'
+    } else {
+      var options = this.options || {}
+      var layout = this.field.layout || options.field_layout
+      var cols = layout ? layout.split('|') : []
+      this.col_left = (cols[0] || 'col-12') + ' col-form-label'
+      this.col_right = cols[1] || 'col-12'
     }
   },
   methods: {
@@ -10322,7 +10328,7 @@ module.exports = {
 }
 
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\" v-if=\"!attr('hidden')\" _v-6c87118a=\"\">\n  <label :class=\"col_left\" v-if=\"!_noLabel\" _v-6c87118a=\"\">\n    <span v-if=\"options.static || attr('static') || (_type != 'boolean' &amp;&amp; _type != 'checkbox')\" :class=\"attr('label_class')\" _v-6c87118a=\"\">\n      {{ field.label }}&nbsp;<i class=\"text-danger\" v-if=\"attr('required')\" _v-6c87118a=\"\">*</i>\n    </span>\n  </label>\n\n  <div :class=\"col_right\" _v-6c87118a=\"\">\n\n    <!-- component injections -->\n\n    <template v-if=\"attr('slot')\">\n      <slot :name=\"attr('slot')\" v-bind=\"data\" _v-6c87118a=\"\"></slot>\n    </template>\n\n    <template v-else-if=\"attr('component')\">\n      <keep-alive _v-6c87118a=\"\">\n        <component :is=\"attr('component')\" v-bind=\"_componentProps\" _v-6c87118a=\"\">\n      </component></keep-alive>\n    </template>\n\n    <!-- statics -->\n\n    <template v-else-if=\"options.static || attr('static')\">\n      <span :class=\"resize('form-control form-control-plaintext')\" _v-6c87118a=\"\">\n        <el-static-field :data=\"data\" :field=\"field\" :options=\"options\" _v-6c87118a=\"\"></el-static-field>\n      </span>\n    </template>\n\n    <!-- composed form inputs -->\n\n    <template v-else-if=\"_type == 'image'\">\n      <div _v-6c87118a=\"\">\n        <el-upload v-if=\"attr('upload')\" :class=\"resize(attr('upload.btn'))\" :name=\"attr('upload.name')\" :url=\"attr('upload.url')\" @done=\"attr('upload').done.call(data, arguments);$forceUpdate();\" @error=\"attr('upload').error.call(data, arguments)\" _v-6c87118a=\"\">\n          <img class=\"img-thumbnail mb-1\" :style=\"attr('style')\" v-if=\"value() || attr('default')\" :src=\"value() || attr('default')\" _v-6c87118a=\"\">\n          <span class=\"btn btn-outline-secondary\" v-else=\"\" _v-6c87118a=\"\">\n            <i class=\"fa fa-plus\" _v-6c87118a=\"\"></i></span>\n        </el-upload>\n        <a class=\"btn btn-sm btn-outline-info corner-tl\" href=\"javascript:;\" @click=\"assign('')\" v-if=\"value()\" _v-6c87118a=\"\">\n          <i class=\"fa fa-lg fa-trash-alt\" _v-6c87118a=\"\"></i>\n        </a>\n      </div>\n    </template>\n\n    <template v-else-if=\"_type == 'json'\">\n      <el-json-editor :value=\"value()\" @input=\"assign($event)\" _v-6c87118a=\"\"></el-json-editor>\n    </template>\n\n    <template v-else-if=\"_type == 'date'\">\n      <el-date-time-picker :name=\"attr('name')\" :format=\"attr('format')\" :value=\"value()\" :input-class=\"resize('form-control')\" :disabled=\"attr('disabled')\" :enabled-dates=\"attr('enabledDates')\" :min-date=\"attr('minDate')\" :max-date=\"attr('maxDate')\" @input=\"assign($event)\" _v-6c87118a=\"\"></el-date-time-picker>\n    </template>\n\n    <!-- prmitive html form controls -->\n\n    <template v-else-if=\"_type == 'radio'\">\n      <label class=\"form-check-inline mt-2\" v-for=\"option in selectOptions()\" _v-6c87118a=\"\">\n        <input type=\"radio\" class=\"form-check-input\" :checked=\"option.value == value() || option == value()\" :name=\"attr('attr')\" :value=\"option.value || option\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" _v-6c87118a=\"\"> {{ option.name || option }}\n      </label>\n    </template>\n\n    <template v-else-if=\"_type == 'check-list'\">\n      <div class=\"list-group list-group-sm\" _v-6c87118a=\"\">\n        <a class=\"list-group-item text-secondary d-flex justify-content-between\" :class=\"{'text-danger font-weight-bold': contain(option) }\" v-for=\"option in selectOptions()\" @click=\"check(option)\" _v-6c87118a=\"\">\n          {{ option.name || option }}\n          <i class=\"fa fa-check text-danger mt-1\" v-if=\"contain(option)\" _v-6c87118a=\"\"></i>\n        </a>\n      </div>\n    </template>\n\n    <template v-else-if=\"_type == 'select'\">\n      <select :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value, 'select')\" :disabled=\"attr('disabled')\" _v-6c87118a=\"\">\n        <option :value=\"null\" _v-6c87118a=\"\">(无)</option>\n        <option v-for=\"option in selectOptions()\" :value=\"option.value || option\" _v-6c87118a=\"\">{{ option.name || option }}</option>\n      </select>\n    </template>\n\n    <template v-else-if=\"_type == 'switch' || _type == 'toggle'\">\n      <el-toggle class=\"fa-2x\" :value=\"value()\" :reverse=\"attr('reverse')\" @input=\"assign\" _v-6c87118a=\"\"></el-toggle>\n    </template>\n\n    <template v-else-if=\"_type == 'checkbox' || _type == 'boolean'\">\n      <label class=\"form-check-inline\" _v-6c87118a=\"\">\n        <input type=\"checkbox\" class=\"form-check-input\" :checked=\"value()\" @input=\"assign($event.target.checked)\" :disabled=\"attr('disabled')\" _v-6c87118a=\"\"> {{ attr('label') }}\n      </label>\n    </template>\n\n    <template v-else-if=\"_type == 'textarea' || attr('rows')\">\n      <textarea :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :rows=\"attr('rows') || 3\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-6c87118a=\"\"></textarea>\n    </template>\n\n    <template v-else-if=\"_type == 'password'\">\n      <input type=\"password\" :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-6c87118a=\"\">\n    </template>\n\n    <template v-else=\"\">\n      <input type=\"text\" :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-6c87118a=\"\">\n    </template>\n\n    <small v-if=\"attr('hint')\" class=\"text-muted\" _v-6c87118a=\"\">* {{ attr('hint') }}</small>\n  </div>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"row\" v-if=\"!attr('hidden')\" _v-6c87118a=\"\">\n  <label :class=\"col_left\" _v-6c87118a=\"\">\n    <span v-if=\"options.static || attr('static') || (_type != 'boolean' &amp;&amp; _type != 'checkbox')\" :class=\"attr('label_class')\" _v-6c87118a=\"\">\n      {{ field.label }}&nbsp;<i class=\"text-danger\" v-if=\"attr('required')\" _v-6c87118a=\"\">*</i>\n    </span>\n  </label>\n\n  <div :class=\"col_right\" _v-6c87118a=\"\">\n\n    <!-- component injections -->\n\n    <template v-if=\"attr('slot')\">\n      <slot :name=\"attr('slot')\" v-bind=\"data\" _v-6c87118a=\"\"></slot>\n    </template>\n\n    <template v-else-if=\"attr('component')\">\n      <keep-alive _v-6c87118a=\"\">\n        <component :is=\"attr('component')\" v-bind=\"_componentProps\" _v-6c87118a=\"\">\n      </component></keep-alive>\n    </template>\n\n    <!-- statics -->\n\n    <template v-else-if=\"options.static || attr('static')\">\n      <span :class=\"resize('form-control form-control-plaintext')\" _v-6c87118a=\"\">\n        <el-static-field :data=\"data\" :field=\"field\" :options=\"options\" _v-6c87118a=\"\"></el-static-field>\n      </span>\n    </template>\n\n    <!-- composed form inputs -->\n\n    <template v-else-if=\"_type == 'image'\">\n      <div _v-6c87118a=\"\">\n        <el-upload v-if=\"attr('upload')\" :class=\"resize(attr('upload.btn'))\" :name=\"attr('upload.name')\" :url=\"attr('upload.url')\" @done=\"attr('upload').done.call(data, arguments);$forceUpdate();\" @error=\"attr('upload').error.call(data, arguments)\" _v-6c87118a=\"\">\n          <img class=\"img-thumbnail mb-1\" :style=\"attr('style')\" v-if=\"value() || attr('default')\" :src=\"value() || attr('default')\" _v-6c87118a=\"\">\n          <span class=\"btn btn-outline-secondary\" v-else=\"\" _v-6c87118a=\"\">\n            <i class=\"fa fa-plus\" _v-6c87118a=\"\"></i></span>\n        </el-upload>\n        <a class=\"btn btn-sm btn-outline-info corner-tl\" href=\"javascript:;\" @click=\"assign('')\" v-if=\"value()\" _v-6c87118a=\"\">\n          <i class=\"fa fa-lg fa-trash-alt\" _v-6c87118a=\"\"></i>\n        </a>\n      </div>\n    </template>\n\n    <template v-else-if=\"_type == 'json'\">\n      <el-json-editor :value=\"value()\" @input=\"assign($event)\" _v-6c87118a=\"\"></el-json-editor>\n    </template>\n\n    <template v-else-if=\"_type == 'date'\">\n      <el-date-time-picker :name=\"attr('name')\" :format=\"attr('format')\" :value=\"value()\" :input-class=\"resize('form-control')\" :disabled=\"attr('disabled')\" :enabled-dates=\"attr('enabledDates')\" :min-date=\"attr('minDate')\" :max-date=\"attr('maxDate')\" @input=\"assign($event)\" _v-6c87118a=\"\"></el-date-time-picker>\n    </template>\n\n    <!-- prmitive html form controls -->\n\n    <template v-else-if=\"_type == 'radio'\">\n      <label class=\"form-check-inline mt-2\" v-for=\"option in selectOptions()\" _v-6c87118a=\"\">\n        <input type=\"radio\" class=\"form-check-input\" :checked=\"option.value == value() || option == value()\" :name=\"attr('attr')\" :value=\"option.value || option\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" _v-6c87118a=\"\"> {{ option.name || option }}\n      </label>\n    </template>\n\n    <template v-else-if=\"_type == 'check-list'\">\n      <div class=\"list-group list-group-sm\" _v-6c87118a=\"\">\n        <a class=\"list-group-item text-secondary d-flex justify-content-between\" :class=\"{'text-danger font-weight-bold': contain(option) }\" v-for=\"option in selectOptions()\" @click=\"check(option)\" _v-6c87118a=\"\">\n          {{ option.name || option }}\n          <i class=\"fa fa-check text-danger mt-1\" v-if=\"contain(option)\" _v-6c87118a=\"\"></i>\n        </a>\n      </div>\n    </template>\n\n    <template v-else-if=\"_type == 'select'\">\n      <select :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value, 'select')\" :disabled=\"attr('disabled')\" _v-6c87118a=\"\">\n        <option :value=\"null\" _v-6c87118a=\"\">(无)</option>\n        <option v-for=\"option in selectOptions()\" :value=\"option.value || option\" _v-6c87118a=\"\">{{ option.name || option }}</option>\n      </select>\n    </template>\n\n    <template v-else-if=\"_type == 'switch' || _type == 'toggle'\">\n      <el-toggle class=\"fa-2x\" :value=\"value()\" :reverse=\"attr('reverse')\" @input=\"assign\" _v-6c87118a=\"\"></el-toggle>\n    </template>\n\n    <template v-else-if=\"_type == 'checkbox' || _type == 'boolean'\">\n      <label class=\"form-check-inline\" _v-6c87118a=\"\">\n        <input type=\"checkbox\" class=\"form-check-input\" :checked=\"value()\" @input=\"assign($event.target.checked)\" :disabled=\"attr('disabled')\" _v-6c87118a=\"\"> {{ attr('label') }}\n      </label>\n    </template>\n\n    <template v-else-if=\"_type == 'textarea' || attr('rows')\">\n      <textarea :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :rows=\"attr('rows') || 3\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-6c87118a=\"\"></textarea>\n    </template>\n\n    <template v-else-if=\"_type == 'password'\">\n      <input type=\"password\" :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-6c87118a=\"\">\n    </template>\n\n    <template v-else=\"\">\n      <input type=\"text\" :class=\"resize('form-control')\" :name=\"attr('name')\" :value=\"value()\" @input=\"assign($event.target.value)\" :disabled=\"attr('disabled')\" :placeholder=\"attr('placeholder')\" _v-6c87118a=\"\">\n    </template>\n\n    <small v-if=\"attr('hint')\" class=\"text-muted\" _v-6c87118a=\"\">* {{ attr('hint') }}</small>\n  </div>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -10407,7 +10413,6 @@ module.exports = {
     }
   },
   created: function() {
-    this.initCopy(this.data);
     if (!this.view) {
       throw new Error('No view found in el-form')
     }
@@ -10419,11 +10424,6 @@ module.exports = {
       this.groups = this.view.groups
     }
     this.initTab()
-  },
-  watch: {
-    data: function(newVal, oldVal) {
-      this.initCopy(newVal)
-    }
   },
   methods: {
     attr: function(field, type) {
@@ -10466,32 +10466,10 @@ module.exports = {
         return false
       }
       if (typeof (elem.hidden) == 'function') {
-        return elem.hidden.call(this.copy);
+        return elem.hidden.call(this.data);
       } else {
         return elem.hidden
       }
-    },
-    initCopy: function(val) {
-      var copy
-      if (this.view.no_copy) {
-        copy = val || {}
-      } else if (val) {
-        copy = JSON.parse(JSON.stringify(val)) || {};
-      } else {
-        copy = Object.assign({}, this.view.default ? this.view.default() : null)
-      }
-      var fields = this.fields()
-      for (var i in fields) {
-        var field = fields[i]
-        var val = this.$getAttr(copy, field.attr)
-        if (typeof (val) == 'undefined') {
-          this.$setAttr(copy, field.attr, '')
-        }
-      }
-
-      delete copy.__v; // delete __v to prevent update failure
-
-      this.copy = copy
     },
     validate: function() {
       var errors = []
@@ -10520,27 +10498,40 @@ module.exports = {
         return this.$emit('error', errors)
       }
       if (!this.api && !this.save) {
-        return this.$emit('submit', this.copy)
+        return this.$emit('submit', this.data)
       }
-      this.$save(this.copy, this.index, function(err, result) {
+      this.$save(this.data, this.index, function(err, result) {
         if (err) {
           self.$emit('error', err)
           g_alert(err.errMsg || err.toString())
         } else {
-          self.$emit('save', self.copy)
+          self.$emit('save', self.data)
           g_alert(err || '保存成功')
         }
       })
     },
     cancelEdit: function() {
-      this.initCopy(this.data)
+      this.restore()
       this.$emit('cancel');
-    }
+    },
+    initCopy: function(val) {
+      this.copy = JSON.parse(JSON.stringify(val))
+    },
+    restore: function() {
+      for (var i in this.groups) {
+        var group = this.groups[i]
+        for (var j in group.fields) {
+          var field = group.fields[j]
+          var val = this.$getAttr(this.copy, field.attr)
+          this.$setAttr(this.data, field.attr, val)
+        }
+      }
+    },
   }
 }
 
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form class=\"form\" @submit.prevent=\"saveItem()\">\n  <slot name=\"header\"></slot>\n  <div class=\"mb-3\" v-if=\"view.button_position == 'header'\">\n    <button type=\"submit\" :class=\"$resize('btn btn-success', view)\">\n      <i class=\"fa fa-save\"></i> 保存\n    </button>\n    <slot name=\"buttons\"></slot>\n  </div>\n  <ul class=\"nav nav-tabs mb-3\" v-if=\"groups.length > 1\">\n    <li class=\"nav-item\" v-for=\"(group, index) in groups\" v-if=\"!isHidden(group)\">\n      <a class=\"nav-link\" :class=\"{ active: index == currentGroupIndex }\" :href=\"'#form_' + _uid + '_tab_' + index\" @click=\"tab(index)\">{{ group.label }}</a>\n    </li>\n  </ul>\n  <template v-for=\"(group, index) in groups\" v-if=\"index == currentGroupIndex &amp;&amp; !isHidden(group)\">\n    <div class=\"row\">\n      <div :class=\"field.width || view.field_width || 'col-12'\" v-for=\"field in group.fields\" v-if=\"!isHidden(field)\">\n        <div class=\"form-group\">\n          <el-form-field ref=\"fields\" :data=\"copy\" :field=\"field\" :options=\"view\">\n            <!-- pass through scoped slots -->\n            <template v-for=\"(_, slot_name) in $scopedSlots\" #[slot_name]=\"slotData\">\n              <slot :name=\"slot_name\" v-bind=\"slotData\"></slot>\n            </template>\n            <!-- pass through normal slots -->\n            <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n              <slot :name=\"slot_name\"></slot>\n            </template>\n          </el-form-field>\n        </div>\n      </div>\n    </div>\n  </template>\n  <slot name=\"form\"></slot>\n  <template v-if=\"!view.no_buttons &amp;&amp; (!view.button_position || view.button_position == 'footer')\">\n    <div class=\"form-group text-right\">\n      <button type=\"button\" :class=\"$resize('btn btn-outline-secondary', view)\" data-dismiss=\"modal\" @click=\"cancelEdit()\">取消</button>\n      <slot name=\"buttons\"></slot>\n      <button type=\"submit\" :class=\"$resize('btn btn-primary', view)\">保存</button>\n    </div>\n  </template>\n  <button type=\"submit\" hidden=\"\"></button>\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form class=\"form\" @submit.prevent=\"saveItem()\">\n  <slot name=\"header\"></slot>\n  <div class=\"mb-3\" v-if=\"view.button_position == 'header'\">\n    <button type=\"submit\" :class=\"$resize('btn btn-success', view)\">\n      <i class=\"fa fa-save\"></i> 保存\n    </button>\n    <slot name=\"buttons\"></slot>\n  </div>\n  <ul class=\"nav nav-tabs nav-justified mb-3\" v-if=\"groups.length > 1\">\n    <li class=\"nav-item\" v-for=\"(group, index) in groups\" v-if=\"!isHidden(group)\">\n      <a class=\"nav-link\" :class=\"{ active: index == currentGroupIndex }\" :href=\"'#form_' + _uid + '_tab_' + index\" @click=\"tab(index)\">{{ group.label }}<i class=\"text-danger\" v-if=\"group.required\"> *</i></a>\n    </li>\n  </ul>\n  <div v-for=\"(group, index) in groups\" :class=\"{'d-none': index != currentGroupIndex || isHidden(group)}\">\n    <div class=\"row\">\n      <div :class=\"field.width || view.field_width || 'col-12'\" v-for=\"field in group.fields\" v-if=\"!isHidden(field)\">\n        <div class=\"form-group\">\n          <el-form-field ref=\"fields\" :data=\"data\" :field=\"field\" :options=\"view\">\n            <!-- pass through scoped slots -->\n            <template v-for=\"(_, slot_name) in $scopedSlots\" #[slot_name]=\"slotData\">\n              <slot :name=\"slot_name\" v-bind=\"slotData\"></slot>\n            </template>\n            <!-- pass through normal slots -->\n            <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n              <slot :name=\"slot_name\"></slot>\n            </template>\n          </el-form-field>\n        </div>\n      </div>\n    </div>\n  </div>\n  <slot name=\"form\"></slot>\n  <template v-if=\"!view.no_buttons &amp;&amp; (!view.button_position || view.button_position == 'footer')\">\n    <div class=\"form-group text-right\">\n      <button type=\"button\" :class=\"$resize('btn btn-outline-secondary', view)\" data-dismiss=\"modal\" @click=\"cancelEdit()\">取消</button>\n      <slot name=\"buttons\"></slot>\n      <button type=\"submit\" :class=\"$resize('btn btn-primary', view)\">保存</button>\n    </div>\n  </template>\n  <button type=\"submit\" hidden=\"\"></button>\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

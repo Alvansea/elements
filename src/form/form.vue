@@ -7,19 +7,19 @@
       </button>
       <slot name="buttons"></slot>
     </div>
-    <ul class="nav nav-tabs mb-3" v-if="groups.length > 1">
+    <ul class="nav nav-tabs nav-justified mb-3" v-if="groups.length > 1">
       <li class="nav-item" v-for="(group, index) in groups" v-if="!isHidden(group)">
         <a class="nav-link" :class="{ active: index == currentGroupIndex }" :href="'#form_' + _uid + '_tab_' + index"
-          @click="tab(index)">{{ group.label }}</a>
+          @click="tab(index)">{{ group.label }}<i class="text-danger" v-if="group.required"> *</i></a>
       </li>
     </ul>
-    <template v-for="(group, index) in groups" v-if="index == currentGroupIndex && !isHidden(group)">
+    <div v-for="(group, index) in groups" :class="{'d-none': index != currentGroupIndex || isHidden(group)}">
       <div class="row">
         <div :class="field.width || view.field_width || 'col-12'"
           v-for="field in group.fields"
           v-if="!isHidden(field)">
           <div class="form-group">
-            <el-form-field ref="fields" :data="copy" :field="field" :options="view">
+            <el-form-field ref="fields" :data="data" :field="field" :options="view">
               <!-- pass through scoped slots -->
               <template v-for="(_, slot_name) in $scopedSlots" #[slot_name]="slotData">
                 <slot :name="slot_name" v-bind="slotData"></slot>
@@ -32,7 +32,7 @@
           </div>
         </div>
       </div>
-    </template>
+    </div>
     <slot name="form"></slot>
     <template v-if="!view.no_buttons && (!view.button_position || view.button_position == 'footer')">
       <div class="form-group text-right">
@@ -67,7 +67,6 @@
       }
     },
     created: function() {
-      this.initCopy(this.data);
       if (!this.view) {
         throw new Error('No view found in el-form')
       }
@@ -79,11 +78,6 @@
         this.groups = this.view.groups
       }
       this.initTab()
-    },
-    watch: {
-      data: function(newVal, oldVal) {
-        this.initCopy(newVal)
-      }
     },
     methods: {
       attr: function(field, type) {
@@ -126,32 +120,10 @@
           return false
         }
         if (typeof (elem.hidden) == 'function') {
-          return elem.hidden.call(this.copy);
+          return elem.hidden.call(this.data);
         } else {
           return elem.hidden
         }
-      },
-      initCopy: function(val) {
-        var copy
-        if (this.view.no_copy) {
-          copy = val || {}
-        } else if (val) {
-          copy = JSON.parse(JSON.stringify(val)) || {};
-        } else {
-          copy = Object.assign({}, this.view.default ? this.view.default() : null)
-        }
-        var fields = this.fields()
-        for (var i in fields) {
-          var field = fields[i]
-          var val = this.$getAttr(copy, field.attr)
-          if (typeof (val) == 'undefined') {
-            this.$setAttr(copy, field.attr, '')
-          }
-        }
-
-        delete copy.__v; // delete __v to prevent update failure
-
-        this.copy = copy
       },
       validate: function() {
         var errors = []
@@ -180,22 +152,35 @@
           return this.$emit('error', errors)
         }
         if (!this.api && !this.save) {
-          return this.$emit('submit', this.copy)
+          return this.$emit('submit', this.data)
         }
-        this.$save(this.copy, this.index, function(err, result) {
+        this.$save(this.data, this.index, function(err, result) {
           if (err) {
             self.$emit('error', err)
             g_alert(err.errMsg || err.toString())
           } else {
-            self.$emit('save', self.copy)
+            self.$emit('save', self.data)
             g_alert(err || '保存成功')
           }
         })
       },
       cancelEdit: function() {
-        this.initCopy(this.data)
+        this.restore()
         this.$emit('cancel');
-      }
+      },
+      initCopy: function(val) {
+        this.copy = JSON.parse(JSON.stringify(val))
+      },
+      restore: function() {
+        for (var i in this.groups) {
+          var group = this.groups[i]
+          for (var j in group.fields) {
+            var field = group.fields[j]
+            var val = this.$getAttr(this.copy, field.attr)
+            this.$setAttr(this.data, field.attr, val)
+          }
+        }
+      },
     }
   }
 </script>

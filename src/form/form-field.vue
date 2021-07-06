@@ -1,6 +1,6 @@
 <template>
   <div class="row" v-if="!attr('hidden')">
-    <label :class="col_left" v-if="!_noLabel">
+    <label :class="col_left">
       <span v-if="options.static || attr('static') || (_type != 'boolean' && _type != 'checkbox')"
         :class="attr('label_class')">
         {{ field.label }}&nbsp;<i class="text-danger" v-if="attr('required')">*</i>
@@ -173,14 +173,9 @@
       'field', 'data', 'options', 'caller'
     ],
     data: function() {
-      var options = this.options || {}
-      var layout = this.field.layout || options.field_layout
-      var cols = layout ? layout.split('|') : []
-      var col_left = (cols[0] || 'col-12') + ' col-form-label'
-      var col_right = cols[1] || 'col-12'
       return {
-        col_left: col_left,
-        col_right: col_right,
+        col_left: 'col-12',
+        col_right: 'col-12',
       };
     },
     computed: {
@@ -212,6 +207,15 @@
       if (this._type == 'label') {
         this.col_left = 'col-12'
         this.col_right = 'd-none'
+      } else if (this._noLabel) {
+        this.col_left = 'd-none'
+        this.col_right = 'col-12'
+      } else {
+        var options = this.options || {}
+        var layout = this.field.layout || options.field_layout
+        var cols = layout ? layout.split('|') : []
+        this.col_left = (cols[0] || 'col-12') + ' col-form-label'
+        this.col_right = cols[1] || 'col-12'
       }
     },
     methods: {

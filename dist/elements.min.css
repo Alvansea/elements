@@ -30,10 +30,6 @@ td .btn.btn-sm {
   margin-bottom: 0;
 }
 
-.inline-block {
-  display: inline-block;
-}
-
 .collapse.in {
   /* make bootstrap-datetimepicker compatible with bootstrap 4 */
   display: block;
@@ -46,6 +42,11 @@ td .btn.btn-sm {
 .form-check-inline {
   margin-bottom: 0 !important;
   cursor: pointer;
+}
+
+.nav-tabs.nav-justified {
+  /* fix nav-justified border issue*/
+  border-bottom: none;
 }
 
 /* fix dropdown menu hidden bug */

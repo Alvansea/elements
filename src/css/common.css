@@ -38,11 +38,6 @@ td .btn.btn-sm {
   cursor: pointer;
 }
 
-.nav-tabs.nav-justified {
-  /* fix nav-justified border issue*/
-  border-bottom: none;
-}
-
 /* fix dropdown menu hidden bug */
 
 @media (max-width: 767px) {

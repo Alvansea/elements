@@ -16,15 +16,7 @@
 
 <script>
   module.exports = {
-    props: [
-      'filters'
-    ],
-    data: function() {
-      return {
-      }
-    },
-    mounted: function() {
-    },
+    props: ['filters'],
     methods: {
       modal: function(flag) {
         this.$refs.modal.modal(flag);

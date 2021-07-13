@@ -9636,12 +9636,10 @@ if (module.hot) {(function () {  module.hot.accept()
 
 
 module.exports = {
-  props: [
-    'view', 'title', 'api'
-  ],
+  props: ['view', 'title', 'api'],
   data: function() {
     return {
-      searchOptions: this.$getQueryParams(),
+      filters: this.$getQueryParams(),
     }
   },
   methods: {
@@ -9652,7 +9650,7 @@ module.exports = {
 }
 
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<el-modal ref=\"searchModal\" :title=\"title || '查找'\" class=\"fade\">\n  <form class=\"form\" method=\"GET\" :action=\"api || ''\">\n    <el-form-field v-for=\"field in view.fields\" v-if=\"!field.hidden || !field.hidden.call(searchOptions)\" :data=\"searchOptions\" :field=\"field\" :options=\"view\">\n    </el-form-field>\n    <input type=\"hidden\" name=\"filtered\" value=\"1\">\n    <div class=\"form-group text-right mt-3\">\n      <button type=\"submit\" class=\"btn btn-sm btn-primary\">确定</button>\n    </div>\n  </form>\n</el-modal>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<el-modal ref=\"searchModal\" :title=\"title || '查找'\" class=\"fade\">\n  <form class=\"form\" method=\"GET\" :action=\"api || '?'\">\n    <el-form-field v-for=\"field in view.fields\" v-if=\"!field.hidden || !field.hidden.call(filters)\" :data=\"filters\" :field=\"field\" :options=\"view\">\n    </el-form-field>\n    <input type=\"hidden\" name=\"filtered\" value=\"1\">\n    <div class=\"form-group text-right mt-3\">\n      <button type=\"submit\" class=\"btn btn-sm btn-primary\">确定</button>\n    </div>\n  </form>\n</el-modal>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)

@@ -1,9 +1,9 @@
 <template>
   <el-modal ref="searchModal" :title="title || '查找'" class="fade">
-    <form class="form" method="GET" :action="api || ''">
+    <form class="form" method="GET" :action="api || '?'">
       <el-form-field v-for="field in view.fields"
-        v-if="!field.hidden || !field.hidden.call(searchOptions)"
-        :data="searchOptions"
+        v-if="!field.hidden || !field.hidden.call(filters)"
+        :data="filters"
         :field="field"
         :options="view">
       </el-form-field>
@@ -17,12 +17,10 @@
 
 <script>
   module.exports = {
-    props: [
-      'view', 'title', 'api'
-    ],
+    props: ['view', 'title', 'api'],
     data: function() {
       return {
-        searchOptions: this.$getQueryParams(),
+        filters: this.$getQueryParams(),
       }
     },
     methods: {

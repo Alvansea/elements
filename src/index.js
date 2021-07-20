@@ -26,7 +26,7 @@ Vue.component('el-tabs', require('./misc/tabs.vue'))
 Vue.component('el-pagination', require('./misc/pagination.vue'))
 
 Vue.config.errorHandler = function(err, vm, info) {
-  console.log(`Error: ${err.toString()}\nInfo: ${info}`);
+  console.log(`* elements error: ${err.toString()}\nInfo: ${info}`);
 }
 
 const objectPath = require('object-path')

@@ -22,11 +22,11 @@
         @save="onSave"
         @remove="onRemove">
         <!-- pass through scoped slots -->
-        <template v-for="(_, slot_name) in $scopedSlots" #[slot_name]="slotData">
-          <slot :name="slot_name" v-bind="slotData"></slot>
+        <template v-for="(index, scoped_slot_name) in $scopedSlots" v-slot:[scoped_slot_name]="slot_data">
+          <slot :name="scoped_slot_name" v-bind="slot_data"></slot>
         </template>
         <!-- pass through normal slots -->
-        <template v-for="(_, slot_name) in $slots" #[slot_name]>
+        <template v-for="(index, slot_name) in $slots" v-slot:[slot_name]>
           <slot :name="slot_name"></slot>
         </template>
       </el-table>
@@ -46,8 +46,8 @@
         @save="onSave"
         @cancel="cancelEdit">
         <!-- pass through scoped slots -->
-        <template v-for="(_, slot_name) in $scopedSlots" #[slot_name]="slotData">
-          <slot :name="slot_name" v-bind="slotData"></slot>
+        <template v-for="(_, scoped_slot_name) in $scopedSlots" #[scoped_slot_name]="slot_data">
+          <slot :name="scoped_slot_name" v-bind="slot_data"></slot>
         </template>
         <!-- pass through normal slots -->
         <template v-for="(_, slot_name) in $slots" #[slot_name]>
@@ -77,7 +77,7 @@
     },
     mounted: function() {
       if (!this.api && !this.save) {
-        g_alert('[Workbench] missing "api" or "save" prop!');
+        alert('[Workbench] missing "api" or "save" prop!');
       }
     },
     watch: {

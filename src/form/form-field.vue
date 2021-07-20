@@ -35,11 +35,11 @@
         <div>
           <el-upload
             v-if="attr('upload')"
-            :class="resize(attr('upload.btn'))"
+            :class="resize(attr('upload.btn') || '')"
             :name="attr('upload.name')"
             :url="attr('upload.url')"
-            @done="attr('upload').done.call(data, arguments);$forceUpdate();"
-            @error="attr('upload').error.call(data, arguments)">
+            @done="attr('upload').done.call({ data, field }, arguments);$forceUpdate();"
+            @error="attr('upload').error.call({ data, field }, arguments)">
             <img class="img-thumbnail mb-1" :style="attr('style')"
               v-if="value() || attr('default')"
               :src="value() || attr('default')">
@@ -48,7 +48,7 @@
           </el-upload>
           <a class="btn btn-sm btn-outline-info corner-tl"
             href="javascript:;"
-            @click="assign('')"
+            @click="assign('');$forceUpdate();"
             v-if="value()">
             <i class="fa fa-lg fa-trash-alt"></i>
           </a>
@@ -310,7 +310,10 @@
         }
         this.$setAttr(this.data, this.attr('attr'), val);
         if (typeof (this.field.onChange) == 'function') {
-          this.field.onChange.call(this.data, val)
+          this.field.onChange.call({
+            data: this.data,
+            field: this.field
+          }, val)
         }
       },
       contain: function(option) {

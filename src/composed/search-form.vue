@@ -19,7 +19,7 @@
     props: ['inputGroup'],
     data: function() {
       return {
-        filter: g_getQueryParams().filter || '',
+        filter: this.$getQueryParams().filter || '',
       }
     },
     methods: {

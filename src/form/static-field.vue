@@ -120,12 +120,6 @@
       href: function() {
         return this.$format(this.attr('href'), this.data)
       },
-      className: function(obj, field) {
-        if (field.className) {
-          return field.className.call(obj);
-        }
-        return '';
-      },
       toggle: function(val) {
         this.$setAttr(this.data, this.field.attr, val)
         this.$emit('change', this.data, this.index)

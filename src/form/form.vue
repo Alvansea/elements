@@ -21,8 +21,8 @@
           <div class="form-group">
             <el-form-field ref="fields" :data="data" :field="field" :options="view">
               <!-- pass through scoped slots -->
-              <template v-for="(_, slot_name) in $scopedSlots" #[slot_name]="slotData">
-                <slot :name="slot_name" v-bind="slotData"></slot>
+              <template v-for="(_, scoped_slot_name) in $scopedSlots" #[scoped_slot_name]="slot_data">
+                <slot :name="scoped_slot_name" v-bind="slot_data"></slot>
               </template>
               <!-- pass through normal slots -->
               <template v-for="(_, slot_name) in $slots" #[slot_name]>
@@ -80,16 +80,6 @@
       this.initTab()
     },
     methods: {
-      attr: function(field, type) {
-        var val = null
-        if (type) {
-          val = this.$getAttr(field, type)
-          if (typeof (val) == 'function') {
-            val = val.call(this.data)
-          }
-        }
-        return val
-      },
       initTab: function() {
         var form = location.hash.match(/#form_(\d+)/gi)
         if (form) {
@@ -120,7 +110,7 @@
           return false
         }
         if (typeof (elem.hidden) == 'function') {
-          return elem.hidden.call(this.data);
+          return elem.hidden.call({ data: this.data });
         } else {
           return elem.hidden
         }

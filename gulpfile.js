@@ -16,8 +16,6 @@ gulp.task('compile', async () => {
       .transform(vueify)
       .bundle()
       .pipe(source('components.js'))
-      // .pipe(buffer())
-      // .pipe(uglify())
       .pipe(gulp.dest('dist'))
       .on('end', resolve)
   })
@@ -46,7 +44,6 @@ gulp.task('css', async () => {
       './src/css/common.css',
     ])
       .pipe(concat('elements.min.css'))
-      // .pipe(uglify())
       .pipe(gulp.dest('dist'))
       .on('end', resolve)
   })

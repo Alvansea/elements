@@ -20,7 +20,7 @@
     <td v-if="!view.hide_row_buttons">
       <a class="btn-cell" role="button" @click="edit(data, index)" title="编辑">
         <i class="fa fa-edit"></i></a>
-      <a class="btn-cell" role="button" @click="clone(data, index)" title="克隆">
+      <a class="btn-cell" role="button" @click="clone(data, index)" title="克隆" v-if="view.clonable">
         <i class="far fa-clone"></i></a>
       <slot name="actions" v-bind="data"></slot>
       <a class="btn-cell" role="button" @click="$emit('remove', data, index)" title="删除">

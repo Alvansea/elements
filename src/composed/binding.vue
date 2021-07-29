@@ -13,7 +13,7 @@
     </form>
     <div class="row">
       <div class="col" :class="sourceCol">
-        <b class="text-secondary">搜索结果</b>
+        <b class="text-secondary">{{ view.source.label || '查询结果' }}</b>
         <table class="table table-sm table-striped">
           <thead>
             <tr>
@@ -36,7 +36,7 @@
         </table>
       </div>
       <div class="col" :class="targetCol">
-        <b class="text-secondary">数据管理</b>
+        <b class="text-secondary">{{ view.target.title || '数据管理' }}</b>
         <table class="table table-sm table-striped">
           <thead>
             <tr>

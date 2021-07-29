@@ -18,12 +18,17 @@
     </template>
 
     <template v-else-if="field.type == 'boolean'">
-      <i v-if="attr()" class="fa fa-check text-success"></i>
-      <i v-else class="fa fa-times text-danger"></i>
+      <i class="fa"
+        :class="{'fa-check text-success': !attr(), 'fa-times text-danger': attr() }"
+        v-if="attr('reverse') || attr('reversed')"></i>
+      <i class="fa"
+        :class="{'fa-check text-success': attr(), 'fa-times text-danger': !attr() }"
+        v-else></i>
     </template>
 
     <template v-else-if="field.type == 'toggle' || field.type == 'switch'">
-      <el-toggle class="fa-lg" :value="attr()" :reverse="attr('reverse')" @input="toggle"></el-toggle>
+      <el-toggle class="fa-lg" :value="attr()" :reverse="attr('reverse') || attr('reversed')" @input="toggle">
+      </el-toggle>
     </template>
 
     <template v-else-if="field.type == 'edit'">

@@ -115,7 +115,8 @@
       </template>
 
       <template v-else-if="_type == 'switch' || _type == 'toggle'">
-        <el-toggle class="fa-2x" :value="value()" :reverse="attr('reverse')" @input="assign"></el-toggle>
+        <el-toggle class="fa-2x" :value="value()" :reverse="attr('reverse') || attr('reversed')" @input="assign">
+        </el-toggle>
       </template>
 
       <template v-else-if="_type == 'checkbox' || _type == 'boolean'">
@@ -123,9 +124,18 @@
           <input
             type="checkbox"
             class="form-check-input"
+            :checked="!value()"
+            @input="assign(!($event.target.checked))"
+            :disabled="attr('disabled')"
+            v-if="attr('reverse') || attr('reversed')" />
+          <input
+            type="checkbox"
+            class="form-check-input"
             :checked="value()"
             @input="assign($event.target.checked)"
-            :disabled="attr('disabled')" /> {{ attr('label') }}
+            :disabled="attr('disabled')"
+            v-else />
+          {{ attr('label') }}
         </label>
       </template>
 

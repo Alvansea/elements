@@ -11786,7 +11786,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-44560b73", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../script/ResourceMixin.js":29,"vue":7,"vue-hot-reload-api":5}],15:[function(require,module,exports){
+},{"../script/ResourceMixin.js":30,"vue":7,"vue-hot-reload-api":5}],15:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.bootstrap-datetimepicker-widget[_v-0d25b00e] {\n  width: 16em !important;\n  padding-top: 1em !important;\n}\n\n.datepicker-days[_v-0d25b00e] {\n  width: auto;\n  font-size: .85em;\n}\n\n.datepicker-days .table-condensed thead tr:first-child th[_v-0d25b00e] {\n  padding-bottom: .8em;\n}\n\n.datepicker-days .table-condensed tbody td[_v-0d25b00e] {\n  padding-top: .6em;\n  padding-bottom: .6em;\n}\n")
 
@@ -12452,7 +12452,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-32433d64", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../script/ResourceMixin.js":29,"vue":7,"vue-hot-reload-api":5}],18:[function(require,module,exports){
+},{"../script/ResourceMixin.js":30,"vue":7,"vue-hot-reload-api":5}],18:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.input-select {\n  padding: .25rem .75rem 0 .75rem !important;\n  height: auto !important;\n  display: -ms-flexbox !important;\n  display: flex !important;\n  -ms-flex-flow: wrap;\n      flex-flow: wrap;\n}\n\n.input-select>.btn-group,\n.input-select>.flex-input {\n  margin-bottom: .25rem !important;\n}\n\n.input-select .btn-group .btn {\n  padding: .1rem .5rem !important;\n}\n\n.input-select .flex-head * {\n  vertical-align: middle;\n}\n\n.input-select .flex-body {\n  -ms-flex: 1;\n      flex: 1;\n}\n\n.input-select .flex-input,\n.input-select .flex-input:focus {\n  border: none;\n  outline-width: 0;\n}\n\n.input-select .option-menu {\n  z-index: 1000;\n  float: left;\n  min-width: 10rem;\n  padding: .5rem 0;\n  font-size: 1rem;\n  color: #212529;\n  text-align: left;\n  list-style: none;\n  background-color: #fff;\n  background-clip: padding-box;\n  border: 1px solid rgba(0, 0, 0, .15);\n  border-radius: .25rem;\n  visibility: hidden;\n}\n\n.input-select .option-menu.show {\n  visibility: visible;\n}\n")
 
@@ -13015,6 +13015,7 @@ Vue.component('el-calendar', require('./misc/calendar.vue'));
 Vue.component('el-filter', require('./misc/filter.vue'));
 Vue.component('el-tabs', require('./misc/tabs.vue'));
 Vue.component('el-pagination', require('./misc/pagination.vue'));
+Vue.component('el-page-limit', require('./misc/page-limit.vue'));
 
 Vue.config.errorHandler = function (err, vm, info) {
   console.log("* elements error: ".concat(err.toString(), "\nInfo: ").concat(info));
@@ -13114,7 +13115,7 @@ Vue.prototype.$isNullOrUndefined = function (val) {
   return typeof val == 'undefined' || val === null;
 };
 
-},{"./composed/binding.vue":10,"./composed/search-form.vue":11,"./composed/search-modal.vue":12,"./composed/toolbar.vue":13,"./composed/workbench.vue":14,"./form/date-time-picker.vue":15,"./form/form-field.vue":16,"./form/form.vue":17,"./form/input-select.vue":18,"./form/json-editor.vue":19,"./form/static-field.vue":20,"./form/toggle.vue":21,"./form/upload.vue":22,"./misc/calendar.vue":24,"./misc/filter.vue":25,"./misc/modal.vue":26,"./misc/pagination.vue":27,"./misc/tabs.vue":28,"./table/table-row.vue":30,"./table/table.vue":31,"object-path":2}],24:[function(require,module,exports){
+},{"./composed/binding.vue":10,"./composed/search-form.vue":11,"./composed/search-modal.vue":12,"./composed/toolbar.vue":13,"./composed/workbench.vue":14,"./form/date-time-picker.vue":15,"./form/form-field.vue":16,"./form/form.vue":17,"./form/input-select.vue":18,"./form/json-editor.vue":19,"./form/static-field.vue":20,"./form/toggle.vue":21,"./form/upload.vue":22,"./misc/calendar.vue":24,"./misc/filter.vue":25,"./misc/modal.vue":26,"./misc/page-limit.vue":27,"./misc/pagination.vue":28,"./misc/tabs.vue":29,"./table/table-row.vue":31,"./table/table.vue":32,"object-path":2}],24:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.calendar-app .header-lite a[_v-c65cbac0] {\n  color: #666;\n  padding: 1em 1.5em;\n}\n\n.calendar-app .table[_v-c65cbac0] {\n  border-bottom: solid 1px #ccc;\n}\n\n.calendar-app .date-cell.default[_v-c65cbac0] {\n  padding: .33em;\n  display: table-cell;\n  width: 14%;\n  height: 8em;\n  vertical-align: top;\n  cursor: pointer;\n  border-left: solid 1px #ccc;\n  border-right: solid 1px #ccc;\n}\n\n.calendar-app .date-cell.default .date-tag[_v-c65cbac0] {\n  display: inline-block;\n  font-weight: bold;\n}\n\n.calendar-app .date-cell.default.disabled .date-tag[_v-c65cbac0] {\n  color: #ccc;\n}\n\n.calendar-app .date-cell.default.selected[_v-c65cbac0] {\n  background-color: #ffffcc;\n}\n\n.calendar-app .date-cell.today .date-tag[_v-c65cbac0] {\n  color: red;\n}\n\n.calendar-app .date-cell.lite[_v-c65cbac0] {\n  height: 4em;\n  text-align: center;\n  font-size: .9em;\n}\n\n.calendar-app .date-cell.lite .date-tag[_v-c65cbac0] {\n  display: inline-block;\n  text-align: center;\n  width: 2em;\n  height: 2em;\n  padding-top: .3em;\n  font-weight: 400;\n  border-radius: 50%;\n  color: #666;\n}\n\n.calendar-app .date-cell.lite.disabled .date-tag[_v-c65cbac0] {\n  color: #ccc;\n}\n\n.calendar-app .date-cell.lite.today .date-tag[_v-c65cbac0] {\n  background-color: #999;\n  color: #fff;\n}\n\n.calendar-app .date-cell.lite.selected .date-tag[_v-c65cbac0] {\n  background-color: red;\n  color: #fff;\n}\n")
 
@@ -13447,6 +13448,49 @@ if (module.hot) {(function () {  module.hot.accept()
 
 
 
+module.exports = {
+  props: [
+    'options', 'pagination'
+  ],
+  computed: {
+    _limit: function() {
+      var pagination = this.pagination || {}
+      return this.$getQueryParams().limit || pagination.limit || 10
+    }
+  },
+  methods: {
+    cellClass: function(limit) {
+      if (limit == this._limit) {
+        return 'btn btn-secondary';
+      } else {
+        return 'btn btn-outline-secondary';
+      }
+    },
+  }
+}
+
+if (module.exports.__esModule) module.exports = module.exports.default
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div class=\"btn-group d-inline-block\">\n  <a :class=\"cellClass(option)\" v-for=\"option in options\" @click=\"$filterBy('limit', option)\">{{ option }}</a>\n</div>\n"
+if (module.hot) {(function () {  module.hot.accept()
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), true)
+  if (!hotAPI.compatible) return
+  if (!module.hot.data) {
+    hotAPI.createRecord("_v-3738405f", module.exports)
+  } else {
+    hotAPI.update("_v-3738405f", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
+  }
+})()}
+},{"vue":7,"vue-hot-reload-api":5}],28:[function(require,module,exports){
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13568,7 +13612,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-4106f308", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":7,"vue-hot-reload-api":5}],28:[function(require,module,exports){
+},{"vue":7,"vue-hot-reload-api":5}],29:[function(require,module,exports){
 
 
 
@@ -13594,7 +13638,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-11dfa040", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":7,"vue-hot-reload-api":5}],29:[function(require,module,exports){
+},{"vue":7,"vue-hot-reload-api":5}],30:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -13618,7 +13662,7 @@ module.exports = {
   }
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 var __vueify_insert__ = require("vueify/lib/insert-css")
 var __vueify_style__ = __vueify_insert__.insert("\n.btn-cell[_v-715871b9] {\n  display: inline-block;\n  margin-right: 0.5em;\n  font-size: 1em;\n  cursor: pointer;\n}\n\n.btn-cell[_v-715871b9]:hover {\n  text-decoration: none;\n}\n\n.el-cell img[_v-715871b9] {\n  width: 1.5em;\n}\n")
 
@@ -13694,7 +13738,7 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-715871b9", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"vue":7,"vue-hot-reload-api":5,"vueify/lib/insert-css":9}],31:[function(require,module,exports){
+},{"vue":7,"vue-hot-reload-api":5,"vueify/lib/insert-css":9}],32:[function(require,module,exports){
 
 
 
@@ -13793,4 +13837,4 @@ if (module.hot) {(function () {  module.hot.accept()
     hotAPI.update("_v-5778fbac", module.exports, (typeof module.exports === "function" ? module.exports.options : module.exports).template)
   }
 })()}
-},{"../script/ResourceMixin.js":29,"vue":7,"vue-hot-reload-api":5}]},{},[23]);
+},{"../script/ResourceMixin.js":30,"vue":7,"vue-hot-reload-api":5}]},{},[23]);

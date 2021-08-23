@@ -25,6 +25,7 @@ Vue.component('el-calendar', require('./misc/calendar.vue'))
 Vue.component('el-filter', require('./misc/filter.vue'))
 Vue.component('el-tabs', require('./misc/tabs.vue'))
 Vue.component('el-pagination', require('./misc/pagination.vue'))
+Vue.component('el-page-limit', require('./misc/page-limit.vue'))
 
 Vue.config.errorHandler = function(err, vm, info) {
   console.log(`* elements error: ${err.toString()}\nInfo: ${info}`);

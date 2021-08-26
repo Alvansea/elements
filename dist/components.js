@@ -11705,11 +11705,7 @@ module.exports = {
   created: function() {
     this.view.options = this.view.options || {};
   },
-  mounted: function() {
-    if (!this.api && !this.save) {
-      alert('[Workbench] missing "api" or "save" prop!');
-    }
-  },
+  mounted: function() { },
   watch: {
     data: function(newVal, oldVal) {
       this.items = newVal || [];
@@ -12135,14 +12131,17 @@ module.exports = {
         index: this.index
       })
     },
+    hasAttr: function(name) {
+      return !!this.field[name]
+    },
     value: function() {
-      var val = this.attr('value') || this.attr('text')
-      if (val) return val
+      if (this.hasAttr('value')) return this.attr('value')
+      if (this.hasAttr('text')) return this.attr('text')
 
       var attr = this.attr('attr')
       if (!attr) return null
 
-      val = this.$getAttr(this.data, attr)
+      var val = this.$getAttr(this.data, attr)
       if (!val) return null
 
       var type = (this.attr('type') || '').toLowerCase()
@@ -12407,18 +12406,18 @@ module.exports = {
         g_alert(errors)
         return this.$emit('error', errors)
       }
-      if (!this.api && !this.save) {
+      if (!this.api && !this.view.api && !this.save) {
         return this.$emit('submit', this.data)
       }
-      this.$save(this.data, this.index, function(err, result) {
-        if (err) {
+      this.$save(this.data, this.index)
+        .then(function(result) {
+          self.$emit('save', self.data)
+          g_alert('保存成功')
+        })
+        .catch(function(err) {
           self.$emit('error', err)
           g_alert(err.errMsg || err.toString())
-        } else {
-          self.$emit('save', self.data)
-          g_alert(err || '保存成功')
-        }
-      })
+        })
     },
     cancelEdit: function() {
       this.restore()
@@ -13644,20 +13643,26 @@ if (module.hot) {(function () {  module.hot.accept()
 module.exports = {
   methods: {
     $save: function $save(item, index, cb) {
-      if (this.save) {
-        this.save(item, index, cb);
-      } else if (this.api) {
-        Vue.resource(this.api + '{/id}').save({
-          id: item._id || item.id
-        }, item).then(function (res) {
-          cb && cb(res.body.errMsg, res.body);
-        })["catch"](function (res) {
-          console.log('* ResourceMixin.$save', res);
-          cb && cb(res.body || res);
-        });
-      } else {
-        cb && cb(new Error('No api or save method defined!'));
-      }
+      var self = this;
+      var api = this.api || this.view.api;
+      console.log('save to', api);
+      return new Promise(function (resolve, reject) {
+        if (self.save) {
+          return self.save(item, index, function (err, result) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result);
+            }
+          });
+        } else if (api) {
+          return Vue.resource(api + '{/id}').save({
+            id: item._id || item.id
+          }, item).then(resolve)["catch"](reject);
+        } else {
+          reject('No api or save method defined!');
+        }
+      });
     }
   }
 };
@@ -13803,17 +13808,19 @@ module.exports = {
       return this.$resize(this.view.striped ? 'table table-striped' : 'table', this.view)
     }
   },
+  mounted: function() {
+  },
   methods: {
     saveItem: function(item, index) {
       var self = this
-      this.$save(item, index, function(err, result) {
-        if (err) {
+      this.$save(item, index)
+        .then(function(result) {
+          self.$emit('save', item, index)
+        })
+        .catch(function(err) {
           g_alert(err)
           self.$emit('error', err)
-        } else {
-          self.$emit('save', item, index)
-        }
-      })
+        })
     },
     removeItem: function(item, index) {
       if (!confirm('请再次确认删除？')) {

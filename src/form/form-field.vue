@@ -236,14 +236,17 @@
           index: this.index
         })
       },
+      hasAttr: function(name) {
+        return !!this.field[name]
+      },
       value: function() {
-        var val = this.attr('value') || this.attr('text')
-        if (val) return val
+        if (this.hasAttr('value')) return this.attr('value')
+        if (this.hasAttr('text')) return this.attr('text')
 
         var attr = this.attr('attr')
         if (!attr) return null
 
-        val = this.$getAttr(this.data, attr)
+        var val = this.$getAttr(this.data, attr)
         if (!val) return null
 
         var type = (this.attr('type') || '').toLowerCase()

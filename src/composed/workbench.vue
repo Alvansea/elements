@@ -75,11 +75,7 @@
     created: function() {
       this.view.options = this.view.options || {};
     },
-    mounted: function() {
-      if (!this.api && !this.save) {
-        alert('[Workbench] missing "api" or "save" prop!');
-      }
-    },
+    mounted: function() { },
     watch: {
       data: function(newVal, oldVal) {
         this.items = newVal || [];

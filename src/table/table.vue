@@ -62,17 +62,19 @@
         return this.$resize(this.view.striped ? 'table table-striped' : 'table', this.view)
       }
     },
+    mounted: function() {
+    },
     methods: {
       saveItem: function(item, index) {
         var self = this
-        this.$save(item, index, function(err, result) {
-          if (err) {
+        this.$save(item, index)
+          .then(function(result) {
+            self.$emit('save', item, index)
+          })
+          .catch(function(err) {
             g_alert(err)
             self.$emit('error', err)
-          } else {
-            self.$emit('save', item, index)
-          }
-        })
+          })
       },
       removeItem: function(item, index) {
         if (!confirm('请再次确认删除？')) {

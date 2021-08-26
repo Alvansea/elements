@@ -141,18 +141,18 @@
           g_alert(errors)
           return this.$emit('error', errors)
         }
-        if (!this.api && !this.save) {
+        if (!this.api && !this.view.api && !this.save) {
           return this.$emit('submit', this.data)
         }
-        this.$save(this.data, this.index, function(err, result) {
-          if (err) {
+        this.$save(this.data, this.index)
+          .then(function(result) {
+            self.$emit('save', self.data)
+            g_alert('保存成功')
+          })
+          .catch(function(err) {
             self.$emit('error', err)
             g_alert(err.errMsg || err.toString())
-          } else {
-            self.$emit('save', self.data)
-            g_alert(err || '保存成功')
-          }
-        })
+          })
       },
       cancelEdit: function() {
         this.restore()

@@ -1,5 +1,5 @@
 <template>
-  <span class="el-cell">
+  <span class="el-cell" :style="field.style || ''">
 
     <template v-if="field.slot">
       <slot :name="field.slot" v-bind="{ data, index }"></slot>
@@ -7,10 +7,10 @@
 
     <template v-else-if="field.repeat && !noRepeat">
       <el-static-field
-        v-for="(prop, propIndex) in data[field.repeat]"
-        :key="data._id + '-' + propIndex"
-        :data="prop"
-        :index="propIndex"
+        v-for="(iter, iterIndex) in data[field.repeat]"
+        :key="data._id + '-' + iterIndex"
+        :data="iter"
+        :index="iterIndex"
         :field="field"
         :no-repeat="true"
         @change="$emit('change', data, index)">

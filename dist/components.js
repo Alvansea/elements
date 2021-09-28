@@ -13805,7 +13805,7 @@ module.exports = {
   },
   computed: {
     _tableClass: function() {
-      return this.$resize(this.view.striped ? 'table table-striped' : 'table', this.view)
+      return this.$resize(this.view.striped ? 'table table-striped' : 'table', this.view) + ' ' + (this.view.class || '')
     }
   },
   mounted: function() {

@@ -28,7 +28,7 @@
                 </el-static-field>
               </td>
               <td>
-                <a href="javascript:;" class="fa fa-plus text-secondary" @click="addItem(item)">
+                <a role="button" class="fa fa-plus text-secondary" @click="addItem(item)">
                 </a>
               </td>
             </tr>

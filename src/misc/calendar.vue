@@ -1,14 +1,14 @@
 <template>
   <div class="calendar-app">
     <div class="d-flex py-2 justify-content-between" :class="{ 'header-lite': mode == 'lite' }">
-      <a href="javascript:;" @click="addMonth(-1)">
+      <a role="button" @click="addMonth(-1)">
         <i class="fa fa-angle-double-left"></i>
         上个月
       </a>
-      <a href="javascript:;" class="calendar-month" @click="gotoToday()">
+      <a role="button" @click="gotoToday()">
         <strong>{{ moment(this.start).format('YYYY MMMM') }}</strong>
       </a>
-      <a href="javascript:;" @click="addMonth(1)">
+      <a role="button" @click="addMonth(1)">
         下个月
         <i class="fa fa-angle-double-right"></i>
       </a>

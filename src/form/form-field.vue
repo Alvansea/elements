@@ -47,7 +47,7 @@
               <i class="fa fa-plus"></i></span>
           </el-upload>
           <a class="btn btn-sm btn-outline-info corner-tl"
-            href="javascript:;"
+            role="button"
             @click="assign('');$forceUpdate();"
             v-if="value()">
             <i class="fa fa-lg fa-trash-alt"></i>

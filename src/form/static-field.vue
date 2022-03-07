@@ -7,7 +7,7 @@
 
     <template v-else-if="field.repeat && !noRepeat">
       <el-static-field
-        v-for="(iter, iterIndex) in data[field.repeat]"
+        v-for="(iter, iterIndex) in attr()"
         :key="data._id + '-' + iterIndex"
         :data="iter"
         :index="iterIndex"

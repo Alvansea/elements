@@ -10,7 +10,7 @@
     </div>
     <div class="d-flex align-items-center mb-3">
       <template v-if="view.limit !== false">
-        <span :class="$resize('btn btn-info mr-1', view)">
+        <span :class="$resize('btn btn-secondary mr-1', view)">
           <b class="d-none d-sm-inline-block">总数：</b><b>{{ _count }}</b>
         </span>
         <el-page-limit :options="[10, 20, 100]" :pagination="pagination" :class="$resize('btn-group mr-1', view)">

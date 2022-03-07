@@ -12680,11 +12680,11 @@ module.exports = {
         }
         this.mode = 'json'
       }
-      this.json = JSON.stringify(newVal || '')
+      this.json = JSON.stringify(newVal || '', null, 4)
     }
   },
   mounted: function() {
-    this.json = JSON.stringify(this.value)
+    this.json = JSON.stringify(this.value, null, 4)
     if (typeof (JSONEditor) != 'undefined') {
       var self = this;
       this.editor = new JSONEditor(this.$refs.editor, {
@@ -13805,7 +13805,11 @@ module.exports = {
   },
   computed: {
     _tableClass: function() {
-      return this.$resize(this.view.striped ? 'table table-striped' : 'table', this.view) + ' ' + (this.view.class || '')
+      var classname = this.$resize('table', this.view)
+      if (this.view.classname) {
+        classname += ' ' + this.view.classname
+      }
+      return classname
     }
   },
   mounted: function() {

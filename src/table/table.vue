@@ -61,7 +61,7 @@
       _tableClass: function() {
         var classname = this.$resize('table', this.view)
         if (this.view.classname) {
-          classname += ' ' = this.view.classname
+          classname += ' ' + this.view.classname
         }
         return classname
       }

@@ -59,7 +59,11 @@
     },
     computed: {
       _tableClass: function() {
-        return this.$resize(this.view.striped ? 'table table-striped' : 'table', this.view) + ' ' + (this.view.class || '')
+        var classname = this.$resize('table', this.view)
+        if (this.view.classname) {
+          classname += ' ' = this.view.classname
+        }
+        return classname
       }
     },
     mounted: function() {

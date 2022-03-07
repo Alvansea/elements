@@ -37,11 +37,11 @@
           }
           this.mode = 'json'
         }
-        this.json = JSON.stringify(newVal || '')
+        this.json = JSON.stringify(newVal || '', null, 4)
       }
     },
     mounted: function() {
-      this.json = JSON.stringify(this.value)
+      this.json = JSON.stringify(this.value, null, 4)
       if (typeof (JSONEditor) != 'undefined') {
         var self = this;
         this.editor = new JSONEditor(this.$refs.editor, {

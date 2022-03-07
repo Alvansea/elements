@@ -10,7 +10,7 @@
                 :column="col.filter.attr || col.attr"
                 :options="col.filter.options"
                 :empty="col.filter.empty || col.filter.default"
-                highlight="text-info"
+                highlight="text-danger"
                 btn="text-dark"></el-filter>
             </template>
             <span v-else>{{ col.label }}</span>

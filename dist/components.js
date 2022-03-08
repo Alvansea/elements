@@ -12399,7 +12399,7 @@ module.exports = {
         return ''
       }
     },
-    saveItem: function() {
+    submit: function() {
       var self = this
       var errors = this.validate()
       if (errors) {
@@ -12408,6 +12408,10 @@ module.exports = {
       }
       if (!this.api && !this.view.api && !this.save) {
         return this.$emit('submit', this.data)
+      }
+      if (this.view.action == '?') {
+        location.href = this.view.action + this.$toQueryString(this.data)
+        return
       }
       this.$save(this.data, this.index)
         .then(function(result) {
@@ -12440,7 +12444,7 @@ module.exports = {
 }
 
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form class=\"form\" @submit.prevent=\"saveItem()\">\n  <slot name=\"header\"></slot>\n  <div class=\"mb-3\" v-if=\"view.button_position == 'header'\">\n    <button type=\"submit\" :class=\"$resize('btn btn-success', view)\">\n      <i class=\"fa fa-save\"></i> 保存\n    </button>\n    <slot name=\"buttons\"></slot>\n  </div>\n  <ul class=\"nav nav-tabs nav-justified mb-3\" v-if=\"groups.length > 1\">\n    <li class=\"nav-item\" v-for=\"(group, index) in groups\" v-if=\"!isHidden(group)\">\n      <a class=\"nav-link\" :class=\"{ active: index == currentGroupIndex }\" :href=\"'#form_' + _uid + '_tab_' + index\" @click=\"tab(index)\">{{ group.label }}<i class=\"text-danger\" v-if=\"group.required\"> *</i></a>\n    </li>\n  </ul>\n  <div v-for=\"(group, index) in groups\" :class=\"{'d-none': index != currentGroupIndex || isHidden(group)}\">\n    <div class=\"row\">\n      <div :class=\"field.width || view.field_width || 'col-12'\" v-for=\"field in group.fields\" v-if=\"!isHidden(field)\">\n        <div class=\"form-group\">\n          <el-form-field ref=\"fields\" :data=\"data\" :field=\"field\" :options=\"view\">\n            <!-- pass through scoped slots -->\n            <template v-for=\"(_, scoped_slot_name) in $scopedSlots\" #[scoped_slot_name]=\"slot_data\">\n              <slot :name=\"scoped_slot_name\" v-bind=\"slot_data\"></slot>\n            </template>\n            <!-- pass through normal slots -->\n            <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n              <slot :name=\"slot_name\"></slot>\n            </template>\n          </el-form-field>\n        </div>\n      </div>\n    </div>\n  </div>\n  <slot name=\"form\"></slot>\n  <template v-if=\"!view.no_buttons &amp;&amp; (!view.button_position || view.button_position == 'footer')\">\n    <div class=\"form-group text-right\">\n      <button type=\"button\" :class=\"$resize('btn btn-outline-secondary', view)\" data-dismiss=\"modal\" @click=\"cancelEdit()\">取消</button>\n      <slot name=\"buttons\"></slot>\n      <button type=\"submit\" :class=\"$resize('btn btn-primary', view)\">保存</button>\n    </div>\n  </template>\n  <button type=\"submit\" hidden=\"\"></button>\n</form>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<form class=\"form\" @submit.prevent=\"submit()\">\n  <slot name=\"header\"></slot>\n  <div class=\"mb-3\" v-if=\"view.button_position == 'header'\">\n    <button type=\"submit\" :class=\"$resize('btn btn-success', view)\">\n      <i class=\"fa fa-save\"></i> 保存\n    </button>\n    <slot name=\"buttons\"></slot>\n  </div>\n  <ul class=\"nav nav-tabs nav-justified mb-3\" v-if=\"groups.length > 1\">\n    <li class=\"nav-item\" v-for=\"(group, index) in groups\" v-if=\"!isHidden(group)\">\n      <a class=\"nav-link\" :class=\"{ active: index == currentGroupIndex }\" :href=\"'#form_' + _uid + '_tab_' + index\" @click=\"tab(index)\">{{ group.label }}<i class=\"text-danger\" v-if=\"group.required\"> *</i></a>\n    </li>\n  </ul>\n  <div v-for=\"(group, index) in groups\" :class=\"{'d-none': index != currentGroupIndex || isHidden(group)}\">\n    <div class=\"row\">\n      <div :class=\"field.width || view.field_width || 'col-12'\" v-for=\"field in group.fields\" v-if=\"!isHidden(field)\">\n        <div class=\"form-group\">\n          <el-form-field ref=\"fields\" :data=\"data\" :field=\"field\" :options=\"view\">\n            <!-- pass through scoped slots -->\n            <template v-for=\"(_, scoped_slot_name) in $scopedSlots\" #[scoped_slot_name]=\"slot_data\">\n              <slot :name=\"scoped_slot_name\" v-bind=\"slot_data\"></slot>\n            </template>\n            <!-- pass through normal slots -->\n            <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n              <slot :name=\"slot_name\"></slot>\n            </template>\n          </el-form-field>\n        </div>\n      </div>\n    </div>\n  </div>\n  <slot name=\"form\"></slot>\n  <template v-if=\"!view.no_buttons &amp;&amp; (!view.button_position || view.button_position == 'footer')\">\n    <div class=\"form-group text-right\">\n      <button type=\"button\" :class=\"$resize('btn btn-outline-secondary', view)\" data-dismiss=\"modal\" @click=\"cancelEdit()\">取消</button>\n      <slot name=\"buttons\"></slot>\n      <button type=\"submit\" :class=\"$resize('btn btn-primary', view)\">保存</button>\n    </div>\n  </template>\n  <button type=\"submit\" hidden=\"\"></button>\n</form>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -13074,6 +13078,12 @@ Vue.prototype.$getQueryParams = function () {
   }
 
   return params;
+};
+
+Vue.prototype.$toQuerystring = function (obj) {
+  return Object.keys(obj).map(function (key) {
+    return key + '=' + encodeURIComponent(obj[key]);
+  }).join('&');
 };
 
 Vue.prototype.$getUrl = function (baseurl, params, hash) {

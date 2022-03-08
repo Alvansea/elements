@@ -1,5 +1,5 @@
 <template>
-  <form class="form" @submit.prevent="saveItem()">
+  <form class="form" @submit.prevent="submit()">
     <slot name="header"></slot>
     <div class="mb-3" v-if="view.button_position == 'header'">
       <button type="submit" :class="$resize('btn btn-success', view)">
@@ -134,7 +134,7 @@
           return ''
         }
       },
-      saveItem: function() {
+      submit: function() {
         var self = this
         var errors = this.validate()
         if (errors) {
@@ -143,6 +143,10 @@
         }
         if (!this.api && !this.view.api && !this.save) {
           return this.$emit('submit', this.data)
+        }
+        if (this.view.action == '?') {
+          location.href = this.view.action + this.$toQueryString(this.data)
+          return
         }
         this.$save(this.data, this.index)
           .then(function(result) {

@@ -78,6 +78,12 @@ Vue.prototype.$getQueryParams = function() {
   return params;
 }
 
+Vue.prototype.$toQuerystring = function(obj) {
+  return Object.keys(obj).map(key => {
+    return key + '=' + encodeURIComponent(obj[key])
+  }).join('&')
+}
+
 Vue.prototype.$getUrl = function(baseurl, params, hash) {
   var qs = '';
   for (var i in params) {

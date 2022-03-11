@@ -55,7 +55,7 @@
   const ResourceMixin = require('../script/ResourceMixin.js')
   module.exports = {
     props: [
-      'data', 'index', 'view', 'save', 'api',
+      'data', 'index', 'view', 'save', 'api', 'hooks'
     ],
     mixins: [ResourceMixin],
     data: function() {
@@ -147,6 +147,9 @@
         if (this.view.action) {
           location.href = this.view.action + this.$toQuerystring(this.data)
           return
+        }
+        if (this.hooks && this.hooks.preSave) {
+          this.hooks.preSave(this.data, this.index)
         }
         this.$save(this.data, this.index)
           .then(function(result) {

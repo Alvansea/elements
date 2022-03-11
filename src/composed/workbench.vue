@@ -43,6 +43,7 @@
         :view="view.form"
         :api="api"
         :save="save"
+        :hooks="hooks"
         @save="onSave"
         @cancel="cancelEdit">
         <!-- pass through scoped slots -->
@@ -62,7 +63,7 @@
   const ResourceMixin = require('../script/ResourceMixin.js')
   module.exports = {
     props: [
-      'data', 'view', 'save', 'api', 'hidden'
+      'data', 'view', 'save', 'api', 'hidden', 'hooks'
     ],
     mixins: [ResourceMixin],
     data: function() {

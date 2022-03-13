@@ -11691,6 +11691,7 @@ if (module.hot) {(function () {  module.hot.accept()
 
 
 
+
 const ResourceMixin = require('../script/ResourceMixin.js')
 module.exports = {
   props: [
@@ -11763,6 +11764,9 @@ module.exports = {
       }
       self.cancelEdit()
     },
+    onSubmited: function(res, index) {
+      this.$emit('submited', res, index)
+    },
     onError: function(err) {
       this.$emit('error', err)
     },
@@ -11776,7 +11780,7 @@ module.exports = {
 }
 
 if (module.exports.__esModule) module.exports = module.exports.default
-;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n  <el-toolbar :view=\"view.toolbar\" :pagination=\"view.table &amp;&amp; view.table.pagination\" v-if=\"view.toolbar\">\n    <a :class=\"$resize('btn btn-outline-primary mr-1', view.toolbar)\" v-if=\"!view.toolbar.hideAddButton\" @click=\"addItem()\">\n      <i class=\"fa fa-plus\"></i> 添加</a>\n    <slot name=\"toolbar\"></slot>\n  </el-toolbar>\n\n  <div class=\"table-responsive\" v-if=\"view.table\">\n    <el-table v-if=\"view.table\" :data=\"items\" :view=\"view.table\" :api=\"api\" :save=\"save\" @edit=\"editItem\" @clone=\"cloneItem\" @save=\"onSave\" @remove=\"onRemove\">\n      <!-- pass through scoped slots -->\n      <template v-for=\"(index, scoped_slot_name) in $scopedSlots\" v-slot:[scoped_slot_name]=\"slot_data\">\n        <slot :name=\"scoped_slot_name\" v-bind=\"slot_data\"></slot>\n      </template>\n      <!-- pass through normal slots -->\n      <template v-for=\"(index, slot_name) in $slots\" v-slot:[slot_name]=\"\">\n        <slot :name=\"slot_name\"></slot>\n      </template>\n    </el-table>\n  </div>\n\n  <el-pagination :pagination=\"view.table &amp;&amp; view.table.pagination\"></el-pagination>\n\n  <el-modal ref=\"editModal\" title=\"编辑\" class=\"fade\" size=\"lg\">\n    <el-form v-if=\"view.form\" ref=\"form\" :data=\"current\" :index=\"index\" :view=\"view.form\" :api=\"api\" :save=\"save\" :hooks=\"hooks\" @save=\"onSave\" @cancel=\"cancelEdit\" @error=\"onError\">\n      <!-- pass through scoped slots -->\n      <template v-for=\"(_, scoped_slot_name) in $scopedSlots\" #[scoped_slot_name]=\"slot_data\">\n        <slot :name=\"scoped_slot_name\" v-bind=\"slot_data\"></slot>\n      </template>\n      <!-- pass through normal slots -->\n      <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n        <slot :name=\"slot_name\"></slot>\n      </template>\n    </el-form>\n  </el-modal>\n</div>\n"
+;(typeof module.exports === "function"? module.exports.options: module.exports).template = "\n<div>\n  <el-toolbar :view=\"view.toolbar\" :pagination=\"view.table &amp;&amp; view.table.pagination\" v-if=\"view.toolbar\">\n    <a :class=\"$resize('btn btn-outline-primary mr-1', view.toolbar)\" v-if=\"!view.toolbar.hideAddButton\" @click=\"addItem()\">\n      <i class=\"fa fa-plus\"></i> 添加</a>\n    <slot name=\"toolbar\"></slot>\n  </el-toolbar>\n\n  <div class=\"table-responsive\" v-if=\"view.table\">\n    <el-table v-if=\"view.table\" :data=\"items\" :view=\"view.table\" :api=\"api\" :save=\"save\" @edit=\"editItem\" @clone=\"cloneItem\" @save=\"onSave\" @remove=\"onRemove\">\n      <!-- pass through scoped slots -->\n      <template v-for=\"(index, scoped_slot_name) in $scopedSlots\" v-slot:[scoped_slot_name]=\"slot_data\">\n        <slot :name=\"scoped_slot_name\" v-bind=\"slot_data\"></slot>\n      </template>\n      <!-- pass through normal slots -->\n      <template v-for=\"(index, slot_name) in $slots\" v-slot:[slot_name]=\"\">\n        <slot :name=\"slot_name\"></slot>\n      </template>\n    </el-table>\n  </div>\n\n  <el-pagination :pagination=\"view.table &amp;&amp; view.table.pagination\"></el-pagination>\n\n  <el-modal ref=\"editModal\" title=\"编辑\" class=\"fade\" size=\"lg\">\n    <el-form v-if=\"view.form\" ref=\"form\" :data=\"current\" :index=\"index\" :view=\"view.form\" :api=\"api\" :save=\"save\" :hooks=\"hooks\" @submited=\"onSubmited\" @save=\"onSave\" @cancel=\"cancelEdit\" @error=\"onError\">\n      <!-- pass through scoped slots -->\n      <template v-for=\"(_, scoped_slot_name) in $scopedSlots\" #[scoped_slot_name]=\"slot_data\">\n        <slot :name=\"scoped_slot_name\" v-bind=\"slot_data\"></slot>\n      </template>\n      <!-- pass through normal slots -->\n      <template v-for=\"(_, slot_name) in $slots\" #[slot_name]=\"\">\n        <slot :name=\"slot_name\"></slot>\n      </template>\n    </el-form>\n  </el-modal>\n</div>\n"
 if (module.hot) {(function () {  module.hot.accept()
   var hotAPI = require("vue-hot-reload-api")
   hotAPI.install(require("vue"), true)
@@ -12422,9 +12426,9 @@ module.exports = {
         this.hooks.preSave(this.data, this.index)
       }
       this.$save(this.data, this.index)
-        .then(function(result) {
-          self.$emit('save', self.data)
-          self.$emit('post_save', self.data)
+        .then(function(res) {
+          self.$emit('submited', res, this.index)
+          self.$emit('save', self.data, this.index)
         })
         .catch(function(err) {
           self.$emit('error', err)

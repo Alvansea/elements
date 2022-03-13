@@ -44,6 +44,7 @@
         :api="api"
         :save="save"
         :hooks="hooks"
+        @submited="onSubmited"
         @save="onSave"
         @cancel="cancelEdit"
         @error="onError">
@@ -132,6 +133,9 @@
           self.data.pop()
         }
         self.cancelEdit()
+      },
+      onSubmited: function(res, index) {
+        this.$emit('submited', res, index)
       },
       onError: function(err) {
         this.$emit('error', err)

@@ -152,9 +152,9 @@
           this.hooks.preSave(this.data, this.index)
         }
         this.$save(this.data, this.index)
-          .then(function(result) {
-            self.$emit('save', self.data)
-            self.$emit('post_save', self.data)
+          .then(function(res) {
+            self.$emit('submited', res, this.index)
+            self.$emit('save', self.data, this.index)
           })
           .catch(function(err) {
             self.$emit('error', err)

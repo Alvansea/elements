@@ -2,7 +2,7 @@ module.exports = {
   methods: {
     $save: function(item, index, cb) {
       var self = this
-      var api = this.api || this.view.api
+      var api = this.view.api || this.api
       console.log('save to', api)
       return new Promise(function(resolve, reject) {
         if (self.save) {

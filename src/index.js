@@ -1,3 +1,5 @@
+const objectPath = require('object-path')
+
 // form
 Vue.component('el-form', require('./form/form.vue'))
 Vue.component('el-form-field', require('./form/form-field.vue'))
@@ -31,7 +33,10 @@ Vue.config.errorHandler = function(err, vm, info) {
   console.log(`* elements error: ${err.toString()}\nInfo: ${info}`);
 }
 
-const objectPath = require('object-path')
+Vue.prototype.$showMsg = function(override) {
+  // can be overridden
+}
+
 Vue.prototype.$getAttr = function(obj, attr, context) {
   var val = objectPath.get(obj, attr)
   if (val) {

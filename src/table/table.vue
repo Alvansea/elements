@@ -76,7 +76,6 @@
             self.$emit('save', item, index)
           })
           .catch(function(err) {
-            g_alert(err)
             self.$emit('error', err)
           })
       },

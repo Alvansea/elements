@@ -66,7 +66,7 @@
         groups: []
       }
     },
-    created: function() {
+    mounted: function() {
       if (!this.view) {
         throw new Error('No view found in el-form')
       }
@@ -138,7 +138,7 @@
         var self = this
         var errors = this.validate()
         if (errors) {
-          g_alert(errors)
+          self.$showMsg(errors)
           return this.$emit('error', errors)
         }
         if (!this.api && !this.view.api && !this.save) {
@@ -154,11 +154,10 @@
         this.$save(this.data, this.index)
           .then(function(result) {
             self.$emit('save', self.data)
-            g_alert('保存成功')
+            self.$emit('post_save', self.data)
           })
           .catch(function(err) {
             self.$emit('error', err)
-            g_alert(err.errMsg || err.toString())
           })
       },
       cancelEdit: function() {

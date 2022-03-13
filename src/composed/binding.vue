@@ -115,19 +115,19 @@
             filter: self.searchFilter
           }).then(function(res) {
             if (res.body.errMsg) {
-              return g_alert(res.body.errMsg);
+              return self.$showMsg(res.body.errMsg);
             }
             self.searchResults = res.body;
           })
         } else if (this.view.source.get) {
           this.view.source.get(self.searchFilter, function(err, data) {
             if (err) {
-              return g_alert(err);
+              return self.$showMsg(err);
             }
             self.searchResults = data;
           })
         } else {
-          g_alert('查询API错误');
+          self.$showMsg('查询API错误');
         }
       },
       clearFilter: function() {

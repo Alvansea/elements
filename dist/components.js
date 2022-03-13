@@ -11405,19 +11405,19 @@ module.exports = {
           filter: self.searchFilter
         }).then(function(res) {
           if (res.body.errMsg) {
-            return g_alert(res.body.errMsg);
+            return self.$showMsg(res.body.errMsg);
           }
           self.searchResults = res.body;
         })
       } else if (this.view.source.get) {
         this.view.source.get(self.searchFilter, function(err, data) {
           if (err) {
-            return g_alert(err);
+            return self.$showMsg(err);
           }
           self.searchResults = data;
         })
       } else {
-        g_alert('查询API错误');
+        self.$showMsg('查询API错误');
       }
     },
     clearFilter: function() {
@@ -12336,7 +12336,7 @@ module.exports = {
       groups: []
     }
   },
-  created: function() {
+  mounted: function() {
     if (!this.view) {
       throw new Error('No view found in el-form')
     }
@@ -12408,7 +12408,7 @@ module.exports = {
       var self = this
       var errors = this.validate()
       if (errors) {
-        g_alert(errors)
+        self.$showMsg(errors)
         return this.$emit('error', errors)
       }
       if (!this.api && !this.view.api && !this.save) {
@@ -12424,11 +12424,10 @@ module.exports = {
       this.$save(this.data, this.index)
         .then(function(result) {
           self.$emit('save', self.data)
-          g_alert('保存成功')
+          self.$emit('post_save', self.data)
         })
         .catch(function(err) {
           self.$emit('error', err)
-          g_alert(err.errMsg || err.toString())
         })
     },
     cancelEdit: function() {
@@ -13002,7 +13001,9 @@ if (module.hot) {(function () {  module.hot.accept()
 },{"vue":7,"vue-hot-reload-api":5,"vueify/lib/insert-css":9}],23:[function(require,module,exports){
 "use strict";
 
-// form
+var objectPath = require('object-path'); // form
+
+
 Vue.component('el-form', require('./form/form.vue'));
 Vue.component('el-form-field', require('./form/form-field.vue'));
 Vue.component('el-static-field', require('./form/static-field.vue'));
@@ -13032,7 +13033,8 @@ Vue.config.errorHandler = function (err, vm, info) {
   console.log("* elements error: ".concat(err.toString(), "\nInfo: ").concat(info));
 };
 
-var objectPath = require('object-path');
+Vue.prototype.$showMsg = function (override) {// can be overridden
+};
 
 Vue.prototype.$getAttr = function (obj, attr, context) {
   var val = objectPath.get(obj, attr);
@@ -13662,7 +13664,7 @@ module.exports = {
   methods: {
     $save: function $save(item, index, cb) {
       var self = this;
-      var api = this.api || this.view.api;
+      var api = this.view.api || this.api;
       console.log('save to', api);
       return new Promise(function (resolve, reject) {
         if (self.save) {
@@ -13840,7 +13842,6 @@ module.exports = {
           self.$emit('save', item, index)
         })
         .catch(function(err) {
-          g_alert(err)
           self.$emit('error', err)
         })
     },

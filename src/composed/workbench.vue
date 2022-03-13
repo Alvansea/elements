@@ -45,7 +45,8 @@
         :save="save"
         :hooks="hooks"
         @save="onSave"
-        @cancel="cancelEdit">
+        @cancel="cancelEdit"
+        @error="onError">
         <!-- pass through scoped slots -->
         <template v-for="(_, scoped_slot_name) in $scopedSlots" #[scoped_slot_name]="slot_data">
           <slot :name="scoped_slot_name" v-bind="slot_data"></slot>
@@ -131,6 +132,9 @@
           self.data.pop()
         }
         self.cancelEdit()
+      },
+      onError: function(err) {
+        this.$emit('error', err)
       },
       onRemove: function(item, index, cb) {
         var self = this;

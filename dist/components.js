@@ -11708,7 +11708,9 @@ module.exports = {
   created: function() {
     this.view.options = this.view.options || {};
   },
-  mounted: function() { },
+  mounted: function() {
+    this.hooks = this.hooks || {}
+  },
   watch: {
     data: function(newVal, oldVal) {
       this.items = newVal || [];
@@ -11728,6 +11730,9 @@ module.exports = {
       }
     },
     editItem: function(item, index) {
+      if (typeof (this.hooks.beforeEdit) == 'function') {
+        this.hooks.beforeEdit(item, index)
+      }
       this.$emit('edit', item, index)
       if (this.view.form) {
         this.current = item;

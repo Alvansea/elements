@@ -20,7 +20,8 @@
         @edit="editItem"
         @clone="cloneItem"
         @save="onSave"
-        @remove="onRemove">
+        @remove="onRemove"
+        @error="onError">
         <!-- pass through scoped slots -->
         <template v-for="(index, scoped_slot_name) in $scopedSlots" v-slot:[scoped_slot_name]="slot_data">
           <slot :name="scoped_slot_name" v-bind="slot_data"></slot>

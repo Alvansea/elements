@@ -77,6 +77,7 @@
       } else {
         this.groups = this.view.groups
       }
+      this.hooks = this.hooks || {}
       this.initTab()
     },
     methods: {

@@ -11708,7 +11708,6 @@ module.exports = {
   },
   created: function() {
     this.view.options = this.view.options || {};
-    this.hooks = this.hooks || {}
   },
   mounted: function() {
     this.hooks = this.hooks || {}
@@ -12358,6 +12357,7 @@ module.exports = {
     } else {
       this.groups = this.view.groups
     }
+    this.hooks = this.hooks || {}
     this.initTab()
   },
   methods: {

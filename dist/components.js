@@ -11731,7 +11731,7 @@ module.exports = {
       }
     },
     editItem: function(item, index) {
-      if (typeof (this.hooks.beforeEdit) == 'function') {
+      if (this.hooks && typeof (this.hooks.beforeEdit) == 'function') {
         this.hooks.beforeEdit(item, index)
       }
       this.$emit('edit', item, index)
